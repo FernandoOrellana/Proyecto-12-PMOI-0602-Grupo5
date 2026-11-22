@@ -135,7 +135,7 @@ fun CarneHistorialScreen(id: Int, onBack: () -> Unit) {
                 Tab(selected = tab == 1, onClick = { tab = 1 }, text = { Text("Historial") })
             }
             when {
-                ui.cargando -> LoadingBox()
+                ui.cargando && ui.carne == null && ui.historial == null -> LoadingBox()
                 ui.carne == null && ui.historial == null -> ErrorBox(ui.error ?: "Sin información.", vm::cargar)
                 tab == 0 -> CarneList(ui.carne)
                 else -> HistorialList(ui.historial)

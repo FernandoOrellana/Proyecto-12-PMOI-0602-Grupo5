@@ -161,7 +161,7 @@ fun HistorialCitasMascotaContent(
         onBack = onBack,
     ) { padding ->
         when {
-            ui.cargando -> LoadingBox(Modifier.padding(padding))
+            ui.cargando && ui.mascota == null -> LoadingBox(Modifier.padding(padding))
             ui.error != null && ui.mascota == null -> ErrorBox(
                 ui.error ?: "Error al cargar el historial.",
                 onRetry,

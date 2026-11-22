@@ -72,7 +72,7 @@ class AdminCitasViewModel(private val citas: CitaRepository) : PagedViewModel<Ci
     fun cambiarEstado(nuevo: String) {
         if (nuevo == _estado.value) return
         _estado.value = nuevo
-        refresh()
+        reload()
     }
 }
 
@@ -90,6 +90,7 @@ fun AdminCitasScreen(onOpen: (Int) -> Unit) {
         onCambiarEstado = vm::cambiarEstado,
         onOpen = onOpen,
         onLoadMore = vm::loadMore,
+        onRefresh = vm::pullRefresh,
     )
 }
 
@@ -100,6 +101,7 @@ fun AdminCitasContent(
     onCambiarEstado: (String) -> Unit = {},
     onOpen: (Int) -> Unit = {},
     onLoadMore: () -> Unit = {},
+    onRefresh: (() -> Unit)? = null,
 ) {
     AppScaffold(title = "Citas") { padding ->
         Column(Modifier.padding(padding)) {
@@ -120,6 +122,7 @@ fun AdminCitasContent(
                 state = state,
                 emptyText = "No hay citas $etiqueta.",
                 onLoadMore = onLoadMore,
+                onRefresh = onRefresh,
                 modifier = Modifier.weight(1f),
             ) { cita ->
                 Card(onClick = { onOpen(cita.id) }, modifier = Modifier.fillMaxWidth()) {

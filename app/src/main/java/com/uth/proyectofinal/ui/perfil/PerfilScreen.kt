@@ -33,6 +33,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.ui.Alignment
+import com.uth.proyectofinal.data.remote.dto.Rol
+import com.uth.proyectofinal.ui.common.Avatar
+import com.uth.proyectofinal.ui.common.EstadoBadge
 
 class PerfilViewModel(private val auth: AuthRepository) : ViewModel() {
 
@@ -85,17 +100,42 @@ fun PerfilContent(
             modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(usuario?.nombre.orEmpty(), style = MaterialTheme.typography.headlineSmall)
-            Text(usuario?.email.orEmpty(), style = MaterialTheme.typography.bodyLarge)
-            Text("Rol: ${usuario?.rol.orEmpty()}", style = MaterialTheme.typography.bodyMedium)
-            Button(onClick = onNotificaciones, modifier = Modifier.fillMaxWidth()) {
+            Card(Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Avatar(usuario?.nombre.orEmpty(), Modifier.size(56.dp))
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(usuario?.nombre.orEmpty(), style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            usuario?.email.orEmpty(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        EstadoBadge(rolLegible(usuario?.rol))
+                    }
+                }
+            }
+            Spacer(Modifier.height(4.dp))
+            Button(
+                onClick = onNotificaciones,
+                shape = MaterialTheme.shapes.small,
+                contentPadding = PaddingValues(vertical = 14.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(Icons.Filled.Notifications, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
                 Text("Notificaciones")
             }
             OutlinedButton(
                 onClick = { confirmar = true },
                 enabled = !ocupado,
+                shape = MaterialTheme.shapes.small,
+                contentPadding = PaddingValues(vertical = 14.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
+                Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
                 Text("Cerrar sesión")
             }
         }
@@ -128,4 +168,11 @@ private fun PerfilScreenPreview() {
             ),
         )
     }
+}
+
+private fun rolLegible(rol: String?): String = when (rol) {
+    Rol.DUENO -> "Dueño"
+    Rol.VETERINARIO -> "Veterinario"
+    Rol.ADMINISTRADOR -> "Administrador"
+    else -> rol.orEmpty()
 }
