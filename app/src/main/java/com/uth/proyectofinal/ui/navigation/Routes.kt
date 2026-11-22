@@ -2,6 +2,7 @@ package com.uth.proyectofinal.ui.navigation
 
 import android.net.Uri
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
@@ -86,7 +87,7 @@ enum class MainTab(val route: String, val label: String, val icon: ImageVector) 
     ADMIN_PEDIDOS(Routes.ADMIN_PEDIDOS, "Pedidos", Icons.AutoMirrored.Filled.List),
     ADMIN_CITAS(Routes.ADMIN_CITAS, "Citas", Icons.Default.DateRange),
     SERVICIOS(Routes.ADMIN_SERVICIOS, "Servicios", Icons.Default.Settings),
-    VETERINARIOS(Routes.ADMIN_VETERINARIOS, "Veterinarios", Icons.Default.Person),
+    VETERINARIOS(Routes.ADMIN_VETERINARIOS, "Veterinarios", Icons.Default.Face),
     REPORTES(Routes.REPORTES, "Reportes", Icons.Default.Info),
     PERFIL(Routes.PERFIL, "Perfil", Icons.Default.Person),
 }

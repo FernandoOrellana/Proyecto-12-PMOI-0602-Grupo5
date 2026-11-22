@@ -74,7 +74,7 @@ fun AdminProductosScreen(onAdd: () -> Unit, onEdit: (Int) -> Unit) {
         PagedColumn(
             state = state,
             emptyText = "No hay productos. Usa + para crear uno.",
-            onLoadMore = vm::loadMore,
+            onLoadMore = vm::loadMore, onRefresh = vm::pullRefresh,
             modifier = Modifier.padding(padding),
         ) { p ->
             Card(modifier = Modifier.fillMaxWidth()) {

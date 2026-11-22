@@ -112,7 +112,7 @@ fun AdminPedidoDetailScreen(id: Int, onBack: () -> Unit) {
     AppScaffold(title = "Pedido #$id", onBack = onBack) { padding ->
         val pedido = ui.pedido
         when {
-            ui.cargando -> LoadingBox(Modifier.padding(padding))
+            ui.cargando && pedido == null -> LoadingBox(Modifier.padding(padding))
             pedido == null -> ErrorBox(ui.error ?: "No se pudo cargar el pedido.", vm::cargar, Modifier.padding(padding))
             else -> Column(
                 Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),

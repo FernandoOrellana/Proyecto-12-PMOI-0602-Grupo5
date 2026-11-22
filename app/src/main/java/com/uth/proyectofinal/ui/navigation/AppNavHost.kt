@@ -5,7 +5,19 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.unit.dp
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -64,9 +76,33 @@ import com.uth.proyectofinal.ui.vet.VacunaFormScreen
 
 @Composable
 fun AppNavHost(container: AppContainer) {
+    val usuario by container.auth.sesion.collectAsStateWithLifecycle()
+    var arranque by rememberSaveable { mutableStateOf(true) }
+    val claveSesion = usuario?.let { "${it.id}-${it.rol}" }
+
+    LaunchedEffect(claveSesion) {
+        if (claveSesion == null) container.cart.clear()
+    }
+
+    key(claveSesion) {
+        val rol = usuario?.rol
+        val inicio = remember {
+            when {
+                arranque -> Routes.SPLASH
+                rol != null -> Routes.homeFor(rol)
+                else -> Routes.LOGIN
+            }
+        }
+        LaunchedEffect(Unit) { arranque = false }
+        SesionNavHost(container, rol, inicio)
+    }
+}
+
+@Composable
+private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String) {
     val nav = rememberNavController()
     val route = nav.currentBackStackEntryAsState().value?.destination?.route
-    val tabs = tabsFor(container.auth.user?.rol)
+    val tabs = tabsFor(rol)
     val showBar = tabs.any { it.route == route }
 
     LaunchedEffect(Unit) {
@@ -80,7 +116,7 @@ fun AppNavHost(container: AppContainer) {
 
     val abrirNotificaciones by PushEvents.pendiente.collectAsStateWithLifecycle()
     LaunchedEffect(abrirNotificaciones, route) {
-        val sesionLista = route != null && route != Routes.SPLASH && route != Routes.LOGIN && container.auth.user != null
+        val sesionLista = route != null && route != Routes.SPLASH && route != Routes.LOGIN && rol != null
         if (abrirNotificaciones && sesionLista) {
             PushEvents.consumir()
             if (route != Routes.NOTIFICACIONES) nav.navigate(Routes.NOTIFICACIONES) { launchSingleTop = true }
@@ -92,10 +128,14 @@ fun AppNavHost(container: AppContainer) {
     Scaffold(
         bottomBar = {
             if (showBar) {
-                val barModifier = if (container.auth.user?.rol == Rol.ADMINISTRADOR) {
+                val barModifier = if (rol == Rol.ADMINISTRADOR) {
                     Modifier.horizontalScroll(rememberScrollState()).widthIn(min = (tabs.size * 80).dp)
                 } else Modifier
-                NavigationBar(modifier = barModifier) {
+                NavigationBar(
+                    modifier = barModifier,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 0.dp,
+                ) {
                     tabs.forEach { tab ->
                         NavigationBarItem(
                             selected = route == tab.route,
@@ -107,7 +147,13 @@ fun AppNavHost(container: AppContainer) {
                                 }
                             },
                             icon = { Icon(tab.icon, contentDescription = tab.label) },
-                            label = { Text(tab.label) },
+                            label = { Text(tab.label, maxLines = 1) },
+                            alwaysShowLabel = tabs.size <= 5,
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            ),
                         )
                     }
                 }
@@ -116,8 +162,12 @@ fun AppNavHost(container: AppContainer) {
     ) { padding ->
         NavHost(
             navController = nav,
-            startDestination = Routes.SPLASH,
+            startDestination = inicio,
             modifier = Modifier.padding(padding),
+            enterTransition = { fadeIn(tween(220)) + slideInHorizontally(tween(220)) { it / 12 } },
+            exitTransition = { fadeOut(tween(150)) },
+            popEnterTransition = { fadeIn(tween(220)) },
+            popExitTransition = { fadeOut(tween(150)) + slideOutHorizontally(tween(220)) { it / 12 } },
         ) {
             composable(Routes.SPLASH) {
                 SplashScreen(container.auth, container.push) { target ->
@@ -130,8 +180,8 @@ fun AppNavHost(container: AppContainer) {
                     onRegister = { nav.navigate(Routes.REGISTER) },
                     onForgot = { nav.navigate(Routes.FORGOT) },
                     onVerify = { nav.navigate(Routes.verify(it)) },
-                    onLoggedIn = { rol ->
-                        nav.navigate(Routes.homeFor(rol)) { popUpTo(nav.graph.id) { inclusive = true } }
+                    onLoggedIn = { nuevoRol ->
+                        nav.navigate(Routes.homeFor(nuevoRol)) { popUpTo(nav.graph.id) { inclusive = true } }
                     },
                 )
             }
@@ -168,7 +218,7 @@ fun AppNavHost(container: AppContainer) {
 
             composable(Routes.MASCOTAS) {
                 MascotasScreen(
-                    rol = container.auth.user?.rol,
+                    rol = rol,
                     onAdd = { nav.navigate(Routes.mascotaForm()) },
                     onOpen = { nav.navigate(Routes.mascota(it)) },
                 )
@@ -176,7 +226,7 @@ fun AppNavHost(container: AppContainer) {
             composable(Routes.MASCOTA, arguments = intArgs("id")) {
                 MascotaDetailScreen(
                     id = it.int("id"),
-                    rol = container.auth.user?.rol,
+                    rol = rol,
                     onBack = { nav.popBackStack() },
                     onEdit = { nav.navigate(Routes.mascotaForm(it)) },
                     onCarne = { nav.navigate(Routes.carne(it)) },
@@ -197,7 +247,7 @@ fun AppNavHost(container: AppContainer) {
             composable(Routes.HISTORIAL_CITAS, arguments = intArgs("id")) {
                 HistorialCitasMascotaScreen(
                     mascotaId = it.int("id"),
-                    rol = container.auth.user?.rol,
+                    rol = rol,
                     onBack = { nav.popBackStack() },
                 )
             }

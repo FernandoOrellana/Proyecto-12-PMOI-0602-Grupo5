@@ -10,10 +10,13 @@ import com.uth.proyectofinal.data.remote.dto.RegisterRequest
 import com.uth.proyectofinal.data.remote.dto.ResetPasswordRequest
 import com.uth.proyectofinal.data.remote.dto.Usuario
 import com.uth.proyectofinal.data.remote.dto.VerifyEmailRequest
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthRepository(private val api: ApiService, private val tokens: TokenStore) {
 
     val user: SessionUser? get() = tokens.user
+
+    val sesion: StateFlow<SessionUser?> = tokens.sesion
 
     val hasSession: Boolean get() = tokens.accessToken != null && tokens.user != null
 

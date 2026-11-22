@@ -91,7 +91,7 @@ fun AdminCitaCobroScreen(id: Int, onBack: () -> Unit) {
     AppScaffold(title = "Cita #$id", onBack = onBack) { padding ->
         val cita = ui.cita
         when {
-            ui.cargando -> LoadingBox(Modifier.padding(padding))
+            ui.cargando && cita == null -> LoadingBox(Modifier.padding(padding))
             cita == null -> ErrorBox(ui.error ?: "No se pudo cargar la cita.", vm::cargar, Modifier.padding(padding))
             else -> Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)) {

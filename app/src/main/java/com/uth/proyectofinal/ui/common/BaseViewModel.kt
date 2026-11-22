@@ -29,6 +29,7 @@ data class PagedState<T>(
     val error: String? = null,
     val page: Int = 0,
     val hasMore: Boolean = true,
+    val refreshing: Boolean = false,
 )
 
 abstract class PagedViewModel<T> : MessageViewModel() {
@@ -38,7 +39,34 @@ abstract class PagedViewModel<T> : MessageViewModel() {
 
     protected abstract suspend fun fetch(page: Int): ApiResult<Page<List<T>>>
 
-    fun refresh() {
+    fun refresh() = recargar(mostrarIndicador = false)
+
+    fun pullRefresh() = recargar(mostrarIndicador = true)
+
+    private fun recargar(mostrarIndicador: Boolean) {
+        job?.cancel()
+        if (_state.value.items.isEmpty()) {
+            _state.value = PagedState()
+            loadMore()
+            return
+        }
+        job = viewModelScope.launch {
+            _state.update { it.copy(loading = true, refreshing = mostrarIndicador, error = null) }
+            when (val result = fetch(1)) {
+                is ApiResult.Success -> {
+                    val meta = result.data.meta
+                    _state.value = PagedState(
+                        items = result.data.data,
+                        page = 1,
+                        hasMore = meta != null && meta.page < meta.totalPages,
+                    )
+                }
+                is ApiResult.Error -> _state.update { it.copy(loading = false, refreshing = false, error = result.message) }
+            }
+        }
+    }
+
+    fun reload() {
         job?.cancel()
         _state.value = PagedState()
         loadMore()

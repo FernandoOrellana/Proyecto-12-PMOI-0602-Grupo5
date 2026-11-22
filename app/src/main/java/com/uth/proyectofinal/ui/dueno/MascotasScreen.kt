@@ -44,6 +44,7 @@ fun MascotasScreen(
         onAdd = onAdd,
         onOpen = onOpen,
         onLoadMore = vm::loadMore,
+        onRefresh = vm::pullRefresh,
     )
 }
 
@@ -54,6 +55,7 @@ fun MascotasContent(
     onAdd: () -> Unit = {},
     onOpen: (Int) -> Unit = {},
     onLoadMore: () -> Unit = {},
+    onRefresh: (() -> Unit)? = null,
 ) {
     val esDueno = (rol == null || rol == Rol.DUENO)
 
@@ -73,6 +75,7 @@ fun MascotasContent(
                 "No hay mascotas registradas en el sistema."
             },
             onLoadMore = onLoadMore,
+            onRefresh = onRefresh,
             modifier = Modifier.padding(padding),
         ) { m ->
             SimpleCard(

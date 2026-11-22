@@ -111,7 +111,7 @@ fun CitaDetailContent(
     AppScaffold(title = "Detalle de cita", onBack = onBack) { padding ->
         val cita = ui.cita
         when {
-            ui.cargando -> LoadingBox(Modifier.padding(padding))
+            ui.cargando && cita == null -> LoadingBox(Modifier.padding(padding))
             cita == null -> ErrorBox(ui.error ?: "No se pudo cargar la cita.", onRetry, Modifier.padding(padding))
             else -> Column(
                 modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),

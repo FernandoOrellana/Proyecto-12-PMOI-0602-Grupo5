@@ -37,6 +37,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import com.uth.proyectofinal.R
 
 data class LoginUi(
     val email: String = "",
@@ -119,7 +128,7 @@ fun LoginContent(
     onForgot: () -> Unit = {},
     onVerify: (String) -> Unit = {},
 ) {
-    AppScaffold(title = "Iniciar sesión") { padding ->
+    AppScaffold(title = "") { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -129,9 +138,29 @@ fun LoginContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Spacer(Modifier.height(16.dp))
+            Box(
+                Modifier
+                    .size(104.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "PetCare HN",
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.TopCenter,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
             Text("PetCare HN", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
-            Text("Veterinaria Huellitas", style = MaterialTheme.typography.bodyLarge)
-            Spacer(Modifier.height(8.dp))
+            Text(
+                "Veterinaria Huellitas",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(12.dp))
             AppTextField(
                 value = ui.email,
                 onValueChange = onEmailChange,

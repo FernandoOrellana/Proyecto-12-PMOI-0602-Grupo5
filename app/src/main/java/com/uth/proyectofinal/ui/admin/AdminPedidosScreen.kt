@@ -24,7 +24,7 @@ fun AdminPedidosScreen(onOpen: (Int) -> Unit) {
     val state by vm.state.collectAsStateWithLifecycle()
     OnResume { vm.refresh() }
     AppScaffold(title = "Pedidos") { padding ->
-        PagedColumn(state = state, emptyText = "No hay pedidos.", onLoadMore = vm::loadMore, modifier = Modifier.padding(padding)) { pedido ->
+        PagedColumn(state = state, emptyText = "No hay pedidos.", onLoadMore = vm::loadMore, onRefresh = vm::pullRefresh, modifier = Modifier.padding(padding)) { pedido ->
             Card(onClick = { onOpen(pedido.id) }, modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {

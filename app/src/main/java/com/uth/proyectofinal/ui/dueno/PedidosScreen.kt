@@ -47,6 +47,7 @@ fun PedidosScreen(onOpen: (Int) -> Unit) {
         state = state,
         onOpen = onOpen,
         onLoadMore = vm::loadMore,
+        onRefresh = vm::pullRefresh,
     )
 }
 
@@ -55,12 +56,14 @@ fun PedidosContent(
     state: PagedState<Pedido>,
     onOpen: (Int) -> Unit = {},
     onLoadMore: () -> Unit = {},
+    onRefresh: (() -> Unit)? = null,
 ) {
     AppScaffold(title = "Mis pedidos") { padding ->
         PagedColumn(
             state = state,
             emptyText = "Aún no tienes pedidos.",
             onLoadMore = onLoadMore,
+            onRefresh = onRefresh,
             modifier = Modifier.padding(padding),
         ) { pedido ->
             Card(onClick = { onOpen(pedido.id) }, modifier = Modifier.fillMaxWidth()) {

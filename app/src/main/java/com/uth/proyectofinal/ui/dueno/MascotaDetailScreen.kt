@@ -176,7 +176,7 @@ fun MascotaDetailContent(
         },
     ) { padding ->
         when {
-            ui.cargando -> LoadingBox(Modifier.padding(padding))
+            ui.cargando && ui.mascota == null -> LoadingBox(Modifier.padding(padding))
             ui.mascota == null -> ErrorBox(ui.error ?: "No se pudo cargar la mascota.", onRetry, Modifier.padding(padding))
             else -> {
                 val m = ui.mascota!!

@@ -71,6 +71,7 @@ fun CitasScreen(onNueva: () -> Unit) {
         messages = vm.messages,
         onNueva = onNueva,
         onLoadMore = vm::loadMore,
+        onRefresh = vm::pullRefresh,
         onCancelar = vm::cancelar,
     )
 }
@@ -81,6 +82,7 @@ fun CitasContent(
     messages: Flow<String>? = null,
     onNueva: () -> Unit = {},
     onLoadMore: () -> Unit = {},
+    onRefresh: (() -> Unit)? = null,
     onCancelar: (Int) -> Unit = {},
 ) {
     var aCancelar by remember { mutableStateOf<Cita?>(null) }
@@ -94,6 +96,7 @@ fun CitasContent(
             state = state,
             emptyText = "No tienes citas. Usa + para agendar una.",
             onLoadMore = onLoadMore,
+            onRefresh = onRefresh,
             modifier = Modifier.padding(padding),
         ) { cita ->
             Card(modifier = Modifier.fillMaxWidth()) {

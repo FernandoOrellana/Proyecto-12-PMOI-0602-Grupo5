@@ -47,7 +47,7 @@ class NotificacionesViewModel(private val repo: NotificacionRepository) : Messag
         viewModelScope.launch {
             _state.update { it.copy(loading = true, error = null) }
             when (val result = repo.list()) {
-                is ApiResult.Success -> _state.update { it.copy(items = result.data, loading = false) }
+                is ApiResult.Success -> _state.update { it.copy(items = result.data, loading = false, hasMore = false) }
                 is ApiResult.Error -> _state.update { it.copy(loading = false, error = result.message) }
             }
         }
