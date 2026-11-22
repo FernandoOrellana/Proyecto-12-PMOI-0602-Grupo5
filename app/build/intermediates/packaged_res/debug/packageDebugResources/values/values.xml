@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="notificacion">#FF00695C</color>
     <color name="white">#FFFFFFFF</color>
-    <string name="app_name">ProyectoFinal</string>
+    <string name="app_name">PetCare HN</string>
     <style name="Base.Theme.ProyectoFinal" parent="Theme.Material3.DayNight.NoActionBar"/>
     <style name="Theme.ProyectoFinal" parent="Base.Theme.ProyectoFinal"/>
 </resources>

@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -25,6 +26,7 @@ import com.uth.proyectofinal.ui.common.AppTextField
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.opcional
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,6 +90,27 @@ fun ConsultaFormScreen(citaId: Int, onBack: () -> Unit) {
         if (ui.listo) onBack()
     }
 
+    ConsultaFormContent(
+        ui = ui,
+        onBack = onBack,
+        onDiagnostico = vm::onDiagnostico,
+        onTratamiento = vm::onTratamiento,
+        onObservaciones = vm::onObservaciones,
+        onPeso = vm::onPeso,
+        onGuardar = vm::guardar,
+    )
+}
+
+@Composable
+fun ConsultaFormContent(
+    ui: ConsultaUi,
+    onBack: () -> Unit = {},
+    onDiagnostico: (String) -> Unit = {},
+    onTratamiento: (String) -> Unit = {},
+    onObservaciones: (String) -> Unit = {},
+    onPeso: (String) -> Unit = {},
+    onGuardar: () -> Unit = {},
+) {
     AppScaffold(title = "Registrar consulta", onBack = onBack) { padding ->
         Column(
             modifier = Modifier
@@ -97,12 +120,27 @@ fun ConsultaFormScreen(citaId: Int, onBack: () -> Unit) {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AppTextField(ui.diagnostico, vm::onDiagnostico, "Diagnóstico *")
-            AppTextField(ui.tratamiento, vm::onTratamiento, "Tratamiento")
-            AppTextField(ui.observaciones, vm::onObservaciones, "Observaciones", singleLine = false)
-            AppTextField(ui.peso, vm::onPeso, "Peso en kg", keyboard = KeyboardType.Decimal)
+            AppTextField(ui.diagnostico, onDiagnostico, "Diagnóstico *")
+            AppTextField(ui.tratamiento, onTratamiento, "Tratamiento")
+            AppTextField(ui.observaciones, onObservaciones, "Observaciones", singleLine = false)
+            AppTextField(ui.peso, onPeso, "Peso en kg", keyboard = KeyboardType.Decimal)
             ErrorText(ui.error)
-            ActionButton("Guardar consulta", ui.guardando, vm::guardar)
+            ActionButton("Guardar consulta", ui.guardando, onGuardar)
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ConsultaFormScreenPreview() {
+    PetCareTheme {
+        ConsultaFormContent(
+            ui = ConsultaUi(
+                diagnostico = "Gripe canina leve",
+                tratamiento = "Jarabe antitusivo cada 8 horas",
+                observaciones = "Revisar en 5 días",
+                peso = "12.5",
+            ),
+        )
     }
 }

@@ -4,12 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,6 +23,7 @@ import com.uth.proyectofinal.ui.common.AppScaffold
 import com.uth.proyectofinal.ui.common.AppTextField
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.appFactory
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,6 +69,21 @@ fun ForgotPasswordScreen(onBack: () -> Unit, onSent: (String) -> Unit) {
         ui.enviado?.let(onSent)
     }
 
+    ForgotPasswordContent(
+        ui = ui,
+        onBack = onBack,
+        onEmailChange = vm::onEmail,
+        onEnviar = vm::enviar,
+    )
+}
+
+@Composable
+fun ForgotPasswordContent(
+    ui: ForgotUi,
+    onBack: () -> Unit = {},
+    onEmailChange: (String) -> Unit = {},
+    onEnviar: () -> Unit = {},
+) {
     AppScaffold(title = "Recuperar contraseña", onBack = onBack) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),
@@ -75,12 +92,12 @@ fun ForgotPasswordScreen(onBack: () -> Unit, onSent: (String) -> Unit) {
             Text("Te enviaremos una clave temporal a tu correo registrado.")
             AppTextField(
                 value = ui.email,
-                onValueChange = vm::onEmail,
+                onValueChange = onEmailChange,
                 label = "Correo electrónico",
                 keyboard = KeyboardType.Email,
             )
             ErrorText(ui.error)
-            ActionButton("Enviar clave temporal", ui.loading, vm::enviar)
+            ActionButton("Enviar clave temporal", ui.loading, onEnviar)
         }
     }
 }
@@ -134,16 +151,58 @@ fun ResetPasswordScreen(email: String, onBack: () -> Unit, onDone: () -> Unit) {
         if (ui.listo) onDone()
     }
 
+    ResetPasswordContent(
+        ui = ui,
+        onBack = onBack,
+        onEmailChange = vm::onEmail,
+        onClaveChange = vm::onClave,
+        onNuevaChange = vm::onNueva,
+        onCambiar = vm::cambiar,
+    )
+}
+
+@Composable
+fun ResetPasswordContent(
+    ui: ResetUi,
+    onBack: () -> Unit = {},
+    onEmailChange: (String) -> Unit = {},
+    onClaveChange: (String) -> Unit = {},
+    onNuevaChange: (String) -> Unit = {},
+    onCambiar: () -> Unit = {},
+) {
     AppScaffold(title = "Nueva contraseña", onBack = onBack) { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AppTextField(ui.email, vm::onEmail, "Correo electrónico", keyboard = KeyboardType.Email)
-            AppTextField(ui.claveTemporal, vm::onClave, "Clave temporal recibida")
-            AppTextField(ui.nuevaPassword, vm::onNueva, "Nueva contraseña (mínimo 8)", password = true)
+            AppTextField(ui.email, onEmailChange, "Correo electrónico", keyboard = KeyboardType.Email)
+            AppTextField(ui.claveTemporal, onClaveChange, "Clave temporal recibida")
+            AppTextField(ui.nuevaPassword, onNuevaChange, "Nueva contraseña (mínimo 8)", password = true)
             ErrorText(ui.error)
-            ActionButton("Cambiar contraseña", ui.loading, vm::cambiar)
+            ActionButton("Cambiar contraseña", ui.loading, onCambiar)
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ForgotPasswordScreenPreview() {
+    PetCareTheme {
+        ForgotPasswordContent(
+            ui = ForgotUi(email = "usuario@ejemplo.com"),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ResetPasswordScreenPreview() {
+    PetCareTheme {
+        ResetPasswordContent(
+            ui = ResetUi(
+                email = "usuario@ejemplo.com",
+                claveTemporal = "123456",
+            ),
+        )
     }
 }

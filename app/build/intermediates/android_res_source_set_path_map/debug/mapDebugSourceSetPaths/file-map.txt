@@ -1,8 +1,8 @@
-com.uth.proyectofinal.app-pngs-0 /home/msi/Escritorio/local 2v3/app/build/generated/res/pngs/debug
-com.uth.proyectofinal.app-updated_navigation_xml-1 /home/msi/Escritorio/local 2v3/app/build/generated/updated_navigation_xml/debug
-com.uth.proyectofinal.app-packageDebugResources-2 /home/msi/Escritorio/local 2v3/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
-com.uth.proyectofinal.app-packageDebugResources-3 /home/msi/Escritorio/local 2v3/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
-com.uth.proyectofinal.app-debug-4 /home/msi/Escritorio/local 2v3/app/build/intermediates/merged_res/debug/mergeDebugResources
-com.uth.proyectofinal.app-debug-5 /home/msi/Escritorio/local 2v3/app/src/debug/res
-com.uth.proyectofinal.app-main-6 /home/msi/Escritorio/local 2v3/app/src/main/res
+com.uth.proyectofinal.app-pngs-0 /home/msi/Escritorio/jennifer/PMO-0602/app/build/generated/res/pngs/debug
+com.uth.proyectofinal.app-updated_navigation_xml-1 /home/msi/Escritorio/jennifer/PMO-0602/app/build/generated/updated_navigation_xml/debug
+com.uth.proyectofinal.app-packageDebugResources-2 /home/msi/Escritorio/jennifer/PMO-0602/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.uth.proyectofinal.app-packageDebugResources-3 /home/msi/Escritorio/jennifer/PMO-0602/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.uth.proyectofinal.app-debug-4 /home/msi/Escritorio/jennifer/PMO-0602/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.uth.proyectofinal.app-debug-5 /home/msi/Escritorio/jennifer/PMO-0602/app/src/debug/res
+com.uth.proyectofinal.app-main-6 /home/msi/Escritorio/jennifer/PMO-0602/app/src/main/res
 gradleHome-0 /home/msi/.gradle

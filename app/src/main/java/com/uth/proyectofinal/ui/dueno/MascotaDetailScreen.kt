@@ -1,5 +1,6 @@
 package com.uth.proyectofinal.ui.dueno
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,16 +26,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.draw.clip
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.uth.proyectofinal.data.remote.dto.Mascota
+import com.uth.proyectofinal.data.remote.dto.Ref
 import com.uth.proyectofinal.data.remote.dto.Rol
 import com.uth.proyectofinal.data.repository.ApiResult
 import com.uth.proyectofinal.data.repository.MascotaRepository
@@ -48,11 +51,14 @@ import com.uth.proyectofinal.ui.common.MessageViewModel
 import com.uth.proyectofinal.ui.common.OnResume
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.imagenPart
+import com.uth.proyectofinal.ui.theme.PetCareTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 
 data class MascotaDetailUi(
     val mascota: Mascota? = null,
@@ -80,7 +86,7 @@ class MascotaDetailViewModel(
         }
     }
 
-    fun subirFoto(foto: okhttp3.MultipartBody.Part) {
+    fun subirFoto(foto: MultipartBody.Part) {
         viewModelScope.launch {
             _ui.update { it.copy(ocupado = true) }
             when (val result = mascotas.subirFoto(id, foto)) {
@@ -122,8 +128,6 @@ fun MascotaDetailScreen(
     val ui by vm.ui.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var confirmar by remember { mutableStateOf(false) }
-    val esDueno = rol == null || rol == Rol.DUENO
 
     OnResume { vm.cargar() }
 
@@ -131,17 +135,49 @@ fun MascotaDetailScreen(
         if (ui.eliminada) onDeleted()
     }
 
+    MascotaDetailContent(
+        id = id,
+        ui = ui,
+        rol = rol,
+        messages = vm.messages,
+        onBack = onBack,
+        onEdit = onEdit,
+        onCarne = onCarne,
+        onHistorialCitas = onHistorialCitas,
+        onRetry = vm::cargar,
+        onFotoSelected = { uri -> scope.launch { vm.subirFoto(context.imagenPart(uri, "foto")) } },
+        onEliminar = vm::eliminar,
+    )
+}
+
+@Composable
+fun MascotaDetailContent(
+    id: Int,
+    ui: MascotaDetailUi,
+    rol: String? = null,
+    messages: Flow<String>? = null,
+    onBack: () -> Unit = {},
+    onEdit: (Int) -> Unit = {},
+    onCarne: (Int) -> Unit = {},
+    onHistorialCitas: (Int) -> Unit = {},
+    onRetry: () -> Unit = {},
+    onFotoSelected: (Uri) -> Unit = {},
+    onEliminar: () -> Unit = {},
+) {
+    var confirmar by remember { mutableStateOf(false) }
+    val esDueno = rol == null || rol == Rol.DUENO
+
     AppScaffold(
         title = ui.mascota?.nombre ?: "Mascota",
         onBack = onBack,
-        messages = vm.messages,
+        messages = messages,
         actions = {
             if (esDueno && ui.mascota != null) EditIcon("Editar") { onEdit(id) }
         },
     ) { padding ->
         when {
             ui.cargando -> LoadingBox(Modifier.padding(padding))
-            ui.mascota == null -> ErrorBox(ui.error ?: "No se pudo cargar la mascota.", vm::cargar, Modifier.padding(padding))
+            ui.mascota == null -> ErrorBox(ui.error ?: "No se pudo cargar la mascota.", onRetry, Modifier.padding(padding))
             else -> {
                 val m = ui.mascota!!
                 Column(
@@ -174,7 +210,7 @@ fun MascotaDetailScreen(
                     if (esDueno) {
                         FotoSelector(
                             enabled = !ui.ocupado,
-                            onFoto = { uri -> scope.launch { vm.subirFoto(context.imagenPart(uri, "foto")) } },
+                            onFoto = onFotoSelected,
                         )
                     }
 
@@ -197,7 +233,7 @@ fun MascotaDetailScreen(
                             modifier = Modifier.fillMaxWidth(),
                         ) { Text("Eliminar mascota") }
                     }
-                    TextButton(onClick = vm::cargar) { Text("Actualizar") }
+                    TextButton(onClick = onRetry) { Text("Actualizar") }
                 }
             }
         }
@@ -210,9 +246,30 @@ fun MascotaDetailScreen(
             confirmText = "Eliminar",
             onConfirm = {
                 confirmar = false
-                vm.eliminar()
+                onEliminar()
             },
             onDismiss = { confirmar = false },
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MascotaDetailScreenPreview() {
+    PetCareTheme {
+        MascotaDetailContent(
+            id = 1,
+            ui = MascotaDetailUi(
+                mascota = Mascota(
+                    id = 1,
+                    nombre = "Max",
+                    especie = Ref(1, "Perro"),
+                    raza = "Golden Retriever",
+                    fechaNacimiento = "2020-05-15",
+                    pesoKg = 28.5,
+                ),
+                cargando = false,
+            ),
         )
     }
 }

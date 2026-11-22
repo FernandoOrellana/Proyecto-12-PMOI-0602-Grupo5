@@ -7,7 +7,7 @@ public static class Roles
     public const string Administrador = "ADMINISTRADOR";
 }
 
-public enum EstadoCita { PENDIENTE, CONFIRMADA, ATENDIDA, CANCELADA }
+public enum EstadoCita { PENDIENTE, CONFIRMADA, EN_CONSULTA, ATENDIDA, CANCELADA }
 
 public enum EstadoPedido { PENDIENTE, LISTO_PARA_RECOGER, ENTREGADO, CANCELADO }
 

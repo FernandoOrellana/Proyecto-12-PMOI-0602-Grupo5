@@ -2,6 +2,7 @@ package com.uth.proyectofinal.ui.dueno
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,14 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -48,16 +49,18 @@ import com.uth.proyectofinal.data.repository.Page
 import com.uth.proyectofinal.data.repository.TiendaRepository
 import com.uth.proyectofinal.ui.common.AppScaffold
 import com.uth.proyectofinal.ui.common.OnResume
+import com.uth.proyectofinal.ui.common.PagedState
 import com.uth.proyectofinal.ui.common.PagedViewModel
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.lps
 import com.uth.proyectofinal.ui.common.opcional
+import com.uth.proyectofinal.ui.theme.PetCareTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 
 class TiendaViewModel(
     private val tienda: TiendaRepository,
@@ -92,16 +95,38 @@ fun TiendaScreen(onCarrito: () -> Unit) {
     val vm: TiendaViewModel = viewModel(factory = appFactory { TiendaViewModel(it.tienda, it.cart) })
     val state by vm.state.collectAsStateWithLifecycle()
     val cantidad by vm.cantidadCarrito.collectAsStateWithLifecycle()
-    var categoria by remember { mutableStateOf("") }
 
     OnResume { vm.refresh() }
 
+    TiendaContent(
+        state = state,
+        cantidadCarrito = cantidad,
+        messages = vm.messages,
+        onCarrito = onCarrito,
+        onFiltrar = vm::filtrar,
+        onAgregar = vm::agregar,
+        onLoadMore = vm::loadMore,
+    )
+}
+
+@Composable
+fun TiendaContent(
+    state: PagedState<Producto>,
+    cantidadCarrito: Int = 0,
+    messages: Flow<String>? = null,
+    onCarrito: () -> Unit = {},
+    onFiltrar: (String) -> Unit = {},
+    onAgregar: (Producto) -> Unit = {},
+    onLoadMore: () -> Unit = {},
+) {
+    var categoria by remember { mutableStateOf("") }
+
     AppScaffold(
         title = "Tienda",
-        messages = vm.messages,
+        messages = messages,
         actions = {
             IconButton(onClick = onCarrito) {
-                BadgedBox(badge = { if (cantidad > 0) Badge { Text("$cantidad") } }) {
+                BadgedBox(badge = { if (cantidadCarrito > 0) Badge { Text("$cantidadCarrito") } }) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito")
                 }
             }
@@ -119,19 +144,19 @@ fun TiendaScreen(onCarrito: () -> Unit) {
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                 )
-                TextButton(onClick = { vm.filtrar(categoria) }) { Text("Filtrar") }
+                TextButton(onClick = { onFiltrar(categoria) }) { Text("Filtrar") }
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+                contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(state.items) { p ->
-                    ProductoCard(p) { vm.agregar(p) }
+                    ProductoCard(p) { onAgregar(p) }
                 }
-                footer(state.loading, state.error, state.hasMore, state.items.isEmpty(), vm::loadMore)
+                footer(state.loading, state.error, state.hasMore, state.items.isEmpty(), onLoadMore)
             }
         }
     }
@@ -176,5 +201,21 @@ private fun ProductoCard(p: Producto, onAgregar: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TiendaScreenPreview() {
+    PetCareTheme {
+        TiendaContent(
+            state = PagedState(
+                items = listOf(
+                    Producto(id = 1, nombre = "Alimento Canino 5kg", precio = 450.0, stock = 10, categoria = "Alimentos"),
+                    Producto(id = 2, nombre = "Champú para Perros 500ml", precio = 180.0, stock = 5, categoria = "Higiene"),
+                ),
+            ),
+            cantidadCarrito = 2,
+        )
     }
 }

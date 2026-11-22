@@ -2,6 +2,7 @@ package com.uth.proyectofinal.ui.dueno
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.uth.proyectofinal.data.remote.dto.ItemPedido
 import com.uth.proyectofinal.data.remote.dto.Pedido
 import com.uth.proyectofinal.data.repository.ApiResult
 import com.uth.proyectofinal.data.repository.TiendaRepository
@@ -33,6 +36,7 @@ import com.uth.proyectofinal.ui.common.OnResume
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.lps
 import com.uth.proyectofinal.ui.common.textoFecha
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,11 +72,26 @@ fun PedidoDetailScreen(id: Int, onBack: () -> Unit) {
 
     OnResume { vm.cargar() }
 
+    PedidoDetailContent(
+        id = id,
+        ui = ui,
+        onBack = onBack,
+        onRetry = vm::cargar,
+    )
+}
+
+@Composable
+fun PedidoDetailContent(
+    id: Int,
+    ui: PedidoDetailUi,
+    onBack: () -> Unit = {},
+    onRetry: () -> Unit = {},
+) {
     AppScaffold(title = "Pedido #$id", onBack = onBack) { padding ->
         val pedido = ui.pedido
         when {
             ui.cargando -> LoadingBox(Modifier.padding(padding))
-            pedido == null -> ErrorBox(ui.error ?: "No se pudo cargar el pedido.", vm::cargar, Modifier.padding(padding))
+            pedido == null -> ErrorBox(ui.error ?: "No se pudo cargar el pedido.", onRetry, Modifier.padding(padding))
             else -> Column(Modifier.padding(padding).fillMaxSize()) {
                 Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -87,7 +106,7 @@ fun PedidoDetailScreen(id: Int, onBack: () -> Unit) {
                 if (pedido.items.isEmpty()) {
                     EmptyBox("El pedido no tiene productos.")
                 } else {
-                    LazyColumn(contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(pedido.items) { item ->
                             Card(modifier = Modifier.fillMaxWidth()) {
                                 Column(Modifier.padding(12.dp)) {
@@ -100,5 +119,27 @@ fun PedidoDetailScreen(id: Int, onBack: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PedidoDetailScreenPreview() {
+    PetCareTheme {
+        PedidoDetailContent(
+            id = 101,
+            ui = PedidoDetailUi(
+                pedido = Pedido(
+                    id = 101,
+                    fecha = "2026-03-30T10:00:00Z",
+                    estado = "CONFIRMADO",
+                    total = 450.0,
+                    items = listOf(
+                        ItemPedido(productoId = 1, nombre = "Alimento Canino 5kg", precioUnitario = 450.0, cantidad = 1, subtotal = 450.0),
+                    ),
+                ),
+                cargando = false,
+            ),
+        )
     }
 }

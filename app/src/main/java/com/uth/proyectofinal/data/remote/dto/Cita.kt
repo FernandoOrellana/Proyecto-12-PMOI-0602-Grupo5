@@ -10,6 +10,7 @@ data class Cita(
     val veterinario: Ref = Ref(),
     val dueno: Ref? = null,
     val consulta: Consulta? = null,
+    val cobrada: Boolean = false,
 )
 
 data class ServicioResumen(val id: Int = 0, val nombre: String = "", val precio: Double = 0.0)
@@ -47,6 +48,7 @@ data class ObservacionesRequest(
 object CitaEstado {
     const val PENDIENTE = "PENDIENTE"
     const val CONFIRMADA = "CONFIRMADA"
+    const val EN_CONSULTA = "EN_CONSULTA"
     const val ATENDIDA = "ATENDIDA"
     const val CANCELADA = "CANCELADA"
 }

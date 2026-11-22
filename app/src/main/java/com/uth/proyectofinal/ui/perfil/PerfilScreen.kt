@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,6 +27,7 @@ import com.uth.proyectofinal.data.repository.AuthRepository
 import com.uth.proyectofinal.ui.common.AppScaffold
 import com.uth.proyectofinal.ui.common.ConfirmDialog
 import com.uth.proyectofinal.ui.common.appFactory
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,18 +58,33 @@ fun PerfilScreen(onNotificaciones: () -> Unit, onLoggedOut: () -> Unit) {
     val vm: PerfilViewModel = viewModel(factory = appFactory { PerfilViewModel(it.auth) })
     val ocupado by vm.ocupado.collectAsStateWithLifecycle()
     val salio by vm.salio.collectAsStateWithLifecycle()
-    var confirmar by remember { mutableStateOf(false) }
 
     LaunchedEffect(salio) {
         if (salio) onLoggedOut()
     }
+
+    PerfilContent(
+        usuario = vm.usuario,
+        ocupado = ocupado,
+        onNotificaciones = onNotificaciones,
+        onCerrarSesion = vm::cerrarSesion,
+    )
+}
+
+@Composable
+fun PerfilContent(
+    usuario: SessionUser?,
+    ocupado: Boolean = false,
+    onNotificaciones: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+) {
+    var confirmar by remember { mutableStateOf(false) }
 
     AppScaffold(title = "Perfil") { padding ->
         Column(
             modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            val usuario = vm.usuario
             Text(usuario?.nombre.orEmpty(), style = MaterialTheme.typography.headlineSmall)
             Text(usuario?.email.orEmpty(), style = MaterialTheme.typography.bodyLarge)
             Text("Rol: ${usuario?.rol.orEmpty()}", style = MaterialTheme.typography.bodyMedium)
@@ -91,9 +108,24 @@ fun PerfilScreen(onNotificaciones: () -> Unit, onLoggedOut: () -> Unit) {
             confirmText = "Salir",
             onConfirm = {
                 confirmar = false
-                vm.cerrarSesion()
+                onCerrarSesion()
             },
             onDismiss = { confirmar = false },
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PerfilScreenPreview() {
+    PetCareTheme {
+        PerfilContent(
+            usuario = SessionUser(
+                id = 1,
+                nombre = "Dr. Carlos Rodríguez",
+                email = "carlos@veterinaria.hn",
+                rol = "VETERINARIO",
+            ),
         )
     }
 }

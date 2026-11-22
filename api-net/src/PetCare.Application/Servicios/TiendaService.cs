@@ -8,6 +8,7 @@ namespace PetCare.Application.Servicios;
 public class TiendaService(
     IProductoRepositorio productos,
     IPedidoRepositorio pedidos,
+    ICobroRepositorio cobros,
     IUnitOfWork uow,
     IReloj reloj,
     Mapeador mapeador)
@@ -77,6 +78,13 @@ public class TiendaService(
         var pedido = await Cargar(id, ct);
         if (!Reglas.TransicionPedidoValida(pedido.Estado, nuevo))
             throw new ValidacionException($"No se puede cambiar el pedido de {pedido.Estado} a {nuevo}");
+
+        if (nuevo == EstadoPedido.ENTREGADO)
+        {
+            var cobro = await cobros.PorOrigenAsync(esPedido: true, id, ct);
+            if (cobro is null)
+                throw new ConflictoException("No se puede marcar el pedido como entregado sin haber registrado el cobro");
+        }
 
         if (nuevo == EstadoPedido.CANCELADO)
         {

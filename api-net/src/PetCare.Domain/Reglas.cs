@@ -55,6 +55,9 @@ public static class Reglas
     public static bool PuedeCancelar(EstadoCita estado) =>
         estado is EstadoCita.PENDIENTE or EstadoCita.CONFIRMADA;
 
+    public static bool PuedeRegistrarConsulta(EstadoCita estado) =>
+        estado is EstadoCita.PENDIENTE or EstadoCita.CONFIRMADA or EstadoCita.EN_CONSULTA;
+
     public static bool TransicionPedidoValida(EstadoPedido desde, EstadoPedido hasta) => (desde, hasta) switch
     {
         (EstadoPedido.PENDIENTE, EstadoPedido.LISTO_PARA_RECOGER) => true,

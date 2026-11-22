@@ -1,78 +1,86 @@
 [
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/xml_data_extraction_rules.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/xml/data_extraction_rules.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/xml_backup_rules.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/xml/backup_rules.xml"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/drawable_ic_notificacion.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/drawable/ic_notificacion.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/xml_network_security_config.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/xml/network_security_config.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "com.uth.proyectofinal.app-debug-62:/drawable_logo.png.flat",
+        "source": "com.uth.proyectofinal.app-main-64:/drawable/logo.png"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/drawable/ic_launcher_foreground.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/drawable_logo.jpg.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/drawable/logo.jpg"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/xml_file_paths.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/xml/file_paths.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/drawable_ic_launcher_background.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/xml_backup_rules.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/xml/backup_rules.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/xml_file_paths.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/xml/file_paths.xml"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/drawable/ic_launcher_background.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/mipmap-hdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.uth.proyectofinal.app-debug-62:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.uth.proyectofinal.app-main-64:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/drawable_ic_notificacion.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/drawable/ic_notificacion.xml"
+    },
+    {
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/xml_data_extraction_rules.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-debug-62:/xml_network_security_config.xml.flat",
+        "source": "/home/msi/.gradle/daemon/9.6.0/com.uth.proyectofinal.app-main-64:/xml/network_security_config.xml"
     }
 ]

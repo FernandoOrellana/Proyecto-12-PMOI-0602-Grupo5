@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,6 +31,7 @@ import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.esFecha
 import com.uth.proyectofinal.ui.common.isoFecha
 import com.uth.proyectofinal.ui.common.opcional
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -116,6 +118,27 @@ fun VacunaFormScreen(citaId: Int, mascotaId: Int, onBack: () -> Unit) {
         if (ui.listo) onBack()
     }
 
+    VacunaFormContent(
+        ui = ui,
+        onBack = onBack,
+        onVacuna = vm::onVacuna,
+        onFecha = vm::onFecha,
+        onLote = vm::onLote,
+        onProxima = vm::onProxima,
+        onGuardar = vm::guardar,
+    )
+}
+
+@Composable
+fun VacunaFormContent(
+    ui: VacunaUi,
+    onBack: () -> Unit = {},
+    onVacuna: (Int) -> Unit = {},
+    onFecha: (String) -> Unit = {},
+    onLote: (String) -> Unit = {},
+    onProxima: (String) -> Unit = {},
+    onGuardar: () -> Unit = {},
+) {
     AppScaffold(title = "Registrar vacuna", onBack = onBack) { padding ->
         if (ui.cargando) {
             LoadingBox(Modifier.padding(padding))
@@ -128,13 +151,34 @@ fun VacunaFormScreen(citaId: Int, mascotaId: Int, onBack: () -> Unit) {
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                SelectField("Vacuna", ui.vacunas, ui.vacunaId, vm::onVacuna)
-                AppTextField(ui.fechaAplicacion, vm::onFecha, "Fecha de aplicación (AAAA-MM-DD)")
-                AppTextField(ui.lote, vm::onLote, "Lote (opcional)")
-                AppTextField(ui.proximaDosis, vm::onProxima, "Próxima dosis (AAAA-MM-DD, opcional)")
+                SelectField("Vacuna", ui.vacunas, ui.vacunaId, onVacuna)
+                AppTextField(ui.fechaAplicacion, onFecha, "Fecha de aplicación (AAAA-MM-DD)")
+                AppTextField(ui.lote, onLote, "Lote (opcional)")
+                AppTextField(ui.proximaDosis, onProxima, "Próxima dosis (AAAA-MM-DD, opcional)")
                 ErrorText(ui.error)
-                ActionButton("Guardar vacuna", ui.guardando, vm::guardar)
+                ActionButton("Guardar vacuna", ui.guardando, onGuardar)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VacunaFormScreenPreview() {
+    PetCareTheme {
+        VacunaFormContent(
+            ui = VacunaUi(
+                vacunas = listOf(
+                    Option(1, "Rabia"),
+                    Option(2, "Parvovirus"),
+                    Option(3, "Triple Felina"),
+                ),
+                vacunaId = 1,
+                fechaAplicacion = "2026-03-30",
+                lote = "LOT-12345",
+                proximaDosis = "2027-03-30",
+                cargando = false,
+            ),
+        )
     }
 }

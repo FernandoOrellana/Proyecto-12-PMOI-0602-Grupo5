@@ -51,3 +51,21 @@ C:/Users/abadc/Desktop/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/refint/PetCare.Infrastructure.dll
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.pdb
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/ref/PetCare.Infrastructure.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Infrastructure.deps.json
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Infrastructure.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Infrastructure.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Application.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Domain.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Application.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/bin/Debug/net10.0/PetCare.Domain.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.csproj.AssemblyReference.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.AssemblyInfoInputs.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.AssemblyInfo.cs
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.csproj.CoreCompileInputs.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.sourcelink.json
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare..2773BF74.Up2Date
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/refint/PetCare.Infrastructure.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/PetCare.Infrastructure.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/obj/Debug/net10.0/ref/PetCare.Infrastructure.dll

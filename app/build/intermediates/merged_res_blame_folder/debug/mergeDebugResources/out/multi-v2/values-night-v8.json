@@ -4,7 +4,7 @@
             "outputFile": "com.uth.proyectofinal.app-mergeDebugResources-60:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/msi/Escritorio/local 2v3/app/src/main/res/values-night/themes.xml",
+                    "source": "/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/res/values-night/themes.xml",
                     "from": {
                         "startLines": "1",
                         "startColumns": "4",

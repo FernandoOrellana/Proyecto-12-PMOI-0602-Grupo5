@@ -21,3 +21,15 @@
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/refint/PetCare.Domain.dll
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.pdb
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/ref/PetCare.Domain.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/bin/Debug/net10.0/PetCare.Domain.deps.json
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/bin/Debug/net10.0/PetCare.Domain.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/bin/Debug/net10.0/PetCare.Domain.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.AssemblyInfoInputs.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.AssemblyInfo.cs
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.csproj.CoreCompileInputs.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.sourcelink.json
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/refint/PetCare.Domain.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/PetCare.Domain.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/Debug/net10.0/ref/PetCare.Domain.dll

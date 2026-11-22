@@ -254,8 +254,11 @@ fun EstadoBadge(text: String) {
     val (bgColor, textColor) = when (text.uppercase()) {
         "ATENDIDA" -> androidx.compose.ui.graphics.Color(0xFFE8F5E9) to androidx.compose.ui.graphics.Color(0xFF2E7D32)
         "CONFIRMADA" -> androidx.compose.ui.graphics.Color(0xFFE3F2FD) to androidx.compose.ui.graphics.Color(0xFF1565C0)
+        "EN_CONSULTA" -> androidx.compose.ui.graphics.Color(0xFFEDE7F6) to androidx.compose.ui.graphics.Color(0xFF4527A0)
         "PENDIENTE" -> androidx.compose.ui.graphics.Color(0xFFFFF8E1) to androidx.compose.ui.graphics.Color(0xFFF57F17)
         "CANCELADA" -> androidx.compose.ui.graphics.Color(0xFFFFEBEE) to androidx.compose.ui.graphics.Color(0xFFC62828)
+        "POR COBRAR" -> androidx.compose.ui.graphics.Color(0xFFFFF3E0) to androidx.compose.ui.graphics.Color(0xFFE65100)
+        "ATENDIDA · YA PAGADO" -> androidx.compose.ui.graphics.Color(0xFFE8F5E9) to androidx.compose.ui.graphics.Color(0xFF2E7D32)
         else -> MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
     }
     Surface(

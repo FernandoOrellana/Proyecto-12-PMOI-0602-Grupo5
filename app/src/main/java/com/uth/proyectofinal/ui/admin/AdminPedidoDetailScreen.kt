@@ -58,7 +58,11 @@ class AdminPedidoDetailViewModel(private val id: Int, private val tienda: Tienda
             "LISTO_PARA_RECOGER" -> estado == "ENTREGADO" || estado == "CANCELADO"
             else -> false
         }
-        if (actual.enviando || actual.enviandoCobro || actual.cargando || !permitido) return
+        if (actual.enviando || actual.enviandoCobro || actual.cargando || actual.consultandoCobro || !permitido) return
+        if (estado == "ENTREGADO" && actual.comprobante == null) {
+            _ui.update { it.copy(error = "No se puede marcar el pedido como entregado sin haber realizado el cobro.") }
+            return
+        }
         _ui.update { it.copy(enviando = true, error = null) }
         viewModelScope.launch {
             when (val result = tienda.cambiarEstadoPedido(id, estado)) {
@@ -149,7 +153,19 @@ fun AdminPedidoDetailScreen(id: Int, onBack: () -> Unit) {
                     Button(onClick = { vm.cambiarEstado("LISTO_PARA_RECOGER") }, enabled = !ui.enviando && !ui.enviandoCobro, modifier = Modifier.fillMaxWidth()) { Text("Marcar listo para recoger") }
                 }
                 if (pedido.estado == "LISTO_PARA_RECOGER") {
-                    Button(onClick = { vm.cambiarEstado("ENTREGADO") }, enabled = !ui.enviando && !ui.enviandoCobro, modifier = Modifier.fillMaxWidth()) { Text("Marcar entregado") }
+                    val cobrado = ui.comprobante != null
+                    Button(
+                        onClick = { vm.cambiarEstado("ENTREGADO") },
+                        enabled = !ui.enviando && !ui.enviandoCobro && !ui.consultandoCobro && cobrado,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text("Marcar entregado") }
+                    if (!cobrado) {
+                        Text(
+                            "Debes registrar el cobro antes de marcar el pedido como entregado.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
                 if (pedido.estado == "PENDIENTE" || pedido.estado == "LISTO_PARA_RECOGER") {
                     OutlinedButton(onClick = { confirmarCancelacion = true }, enabled = !ui.enviando && !ui.enviandoCobro, modifier = Modifier.fillMaxWidth()) { Text("Cancelar pedido") }

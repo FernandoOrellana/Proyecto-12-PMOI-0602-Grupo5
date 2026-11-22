@@ -119,6 +119,9 @@ interface ApiService {
     @PATCH("api/citas/{id}/cancelar")
     suspend fun cancelarCita(@Path("id") id: Int): ApiResponse<Cita>
 
+    @PATCH("api/citas/{id}/iniciar")
+    suspend fun iniciarConsulta(@Path("id") id: Int): ApiResponse<Cita>
+
     @POST("api/citas/{id}/consulta")
     suspend fun registrarConsulta(
         @Path("id") id: Int,

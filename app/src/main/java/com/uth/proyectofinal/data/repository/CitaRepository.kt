@@ -21,6 +21,8 @@ class CitaRepository(private val api: ApiService) {
 
     suspend fun cancelar(id: Int) = apiCall { api.cancelarCita(id) }
 
+    suspend fun iniciarConsulta(id: Int) = apiCall { api.iniciarConsulta(id) }
+
     suspend fun registrarConsulta(id: Int, body: ConsultaRequest) =
         apiCall { api.registrarConsulta(id, body) }
 

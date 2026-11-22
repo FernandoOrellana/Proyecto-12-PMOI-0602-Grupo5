@@ -12,8 +12,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +25,8 @@ import com.uth.proyectofinal.ui.common.AppTextField
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.MessageViewModel
 import com.uth.proyectofinal.ui.common.appFactory
+import com.uth.proyectofinal.ui.theme.PetCareTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,7 +84,28 @@ fun VerifyEmailScreen(email: String, onBack: () -> Unit, onVerified: () -> Unit)
         if (ui.verificado) onVerified()
     }
 
-    AppScaffold(title = "Verificar correo", onBack = onBack, messages = vm.messages) { padding ->
+    VerifyEmailContent(
+        email = email,
+        ui = ui,
+        messages = vm.messages,
+        onBack = onBack,
+        onCodigoChange = vm::onCodigo,
+        onVerificar = vm::verificar,
+        onReenviar = vm::reenviar,
+    )
+}
+
+@Composable
+fun VerifyEmailContent(
+    email: String,
+    ui: VerifyUi,
+    messages: Flow<String>? = null,
+    onBack: () -> Unit = {},
+    onCodigoChange: (String) -> Unit = {},
+    onVerificar: () -> Unit = {},
+    onReenviar: () -> Unit = {},
+) {
+    AppScaffold(title = "Verificar correo", onBack = onBack, messages = messages) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -93,15 +116,26 @@ fun VerifyEmailScreen(email: String, onBack: () -> Unit, onVerified: () -> Unit)
             Text("Enviamos un código de 6 dígitos a $email. Ingrésalo para activar tu cuenta.")
             AppTextField(
                 value = ui.codigo,
-                onValueChange = vm::onCodigo,
+                onValueChange = onCodigoChange,
                 label = "Código de verificación",
                 keyboard = KeyboardType.Number,
             )
             ErrorText(ui.error)
-            ActionButton("Verificar", ui.loading, vm::verificar)
-            OutlinedButton(onClick = vm::reenviar, modifier = Modifier.fillMaxWidth()) {
+            ActionButton("Verificar", ui.loading, onVerificar)
+            OutlinedButton(onClick = onReenviar, modifier = Modifier.fillMaxWidth()) {
                 Text("Reenviar código")
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun VerifyEmailScreenPreview() {
+    PetCareTheme {
+        VerifyEmailContent(
+            email = "usuario@ejemplo.com",
+            ui = VerifyUi(codigo = "123456"),
+        )
     }
 }

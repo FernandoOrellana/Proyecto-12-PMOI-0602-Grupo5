@@ -29,3 +29,19 @@
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/refint/PetCare.Application.dll
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.pdb
 /home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/ref/PetCare.Application.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/bin/Release/net10.0/PetCare.Application.deps.json
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/bin/Release/net10.0/PetCare.Application.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/bin/Release/net10.0/PetCare.Application.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/bin/Release/net10.0/PetCare.Domain.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/bin/Release/net10.0/PetCare.Domain.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.csproj.AssemblyReference.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.AssemblyInfoInputs.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.AssemblyInfo.cs
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.csproj.CoreCompileInputs.cache
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.sourcelink.json
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare..1567D0D2.Up2Date
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/refint/PetCare.Application.dll
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/PetCare.Application.pdb
+/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/obj/Release/net10.0/ref/PetCare.Application.dll

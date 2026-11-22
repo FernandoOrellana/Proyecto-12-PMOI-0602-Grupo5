@@ -5,17 +5,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -30,10 +39,11 @@ import com.uth.proyectofinal.data.repository.MascotaRepository
 import com.uth.proyectofinal.data.repository.dataOrNull
 import com.uth.proyectofinal.ui.common.ActionButton
 import com.uth.proyectofinal.ui.common.AppScaffold
-import com.uth.proyectofinal.ui.common.AppTextField
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.Option
 import com.uth.proyectofinal.ui.common.SelectField
+import com.uth.proyectofinal.ui.common.aFechaIso
+import com.uth.proyectofinal.ui.common.aMillisUtc
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.esFecha
 import com.uth.proyectofinal.ui.common.isoFecha
@@ -163,6 +173,7 @@ fun AgendarCitaScreen(onBack: () -> Unit, onCreated: () -> Unit) {
         factory = appFactory { AgendarCitaViewModel(it.citas, it.mascotas, it.catalog) },
     )
     val ui by vm.ui.collectAsStateWithLifecycle()
+    var mostrarCalendario by remember { mutableStateOf(false) }
 
     LaunchedEffect(ui.listo) {
         if (ui.listo) onCreated()
@@ -183,7 +194,10 @@ fun AgendarCitaScreen(onBack: () -> Unit, onCreated: () -> Unit) {
             SelectField("Mascota", ui.mascotas, ui.mascotaId, vm::onMascota)
             SelectField("Servicio", ui.servicios, ui.servicioId, vm::onServicio)
             SelectField("Veterinario", ui.veterinarios, ui.veterinarioId, vm::onVeterinario)
-            AppTextField(ui.fecha, vm::onFecha, "Fecha (AAAA-MM-DD)")
+            Text("Fecha: ${ui.fecha}", style = MaterialTheme.typography.bodyLarge)
+            OutlinedButton(onClick = { mostrarCalendario = true }, modifier = Modifier.fillMaxWidth()) {
+                Text("Elegir fecha")
+            }
             Text("Horas disponibles", style = MaterialTheme.typography.titleSmall)
             when {
                 ui.cargandoHoras -> CircularProgressIndicator(Modifier.size(24.dp))
@@ -202,6 +216,26 @@ fun AgendarCitaScreen(onBack: () -> Unit, onCreated: () -> Unit) {
             }
             ErrorText(ui.error)
             ActionButton("Confirmar cita", ui.guardando, vm::confirmar)
+        }
+    }
+
+    if (mostrarCalendario) {
+        val picker = rememberDatePickerState(
+            initialSelectedDateMillis = ui.fecha.aMillisUtc(),
+        )
+        DatePickerDialog(
+            onDismissRequest = { mostrarCalendario = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    picker.selectedDateMillis?.let { vm.onFecha(it.aFechaIso()) }
+                    mostrarCalendario = false
+                }) { Text("Aceptar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarCalendario = false }) { Text("Cancelar") }
+            },
+        ) {
+            DatePicker(state = picker, title = { Text("Elige la fecha de la cita") })
         }
     }
 }

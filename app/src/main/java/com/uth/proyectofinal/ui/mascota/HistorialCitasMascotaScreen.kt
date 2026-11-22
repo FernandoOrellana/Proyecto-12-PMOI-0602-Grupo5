@@ -1,6 +1,5 @@
 package com.uth.proyectofinal.ui.mascota
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,7 +42,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uth.proyectofinal.data.remote.dto.Cita
 import com.uth.proyectofinal.data.remote.dto.Consulta
 import com.uth.proyectofinal.data.remote.dto.Mascota
+import com.uth.proyectofinal.data.remote.dto.Ref
 import com.uth.proyectofinal.data.remote.dto.Rol
+import com.uth.proyectofinal.data.remote.dto.ServicioResumen
 import com.uth.proyectofinal.data.repository.ApiResult
 import com.uth.proyectofinal.data.repository.CitaRepository
 import com.uth.proyectofinal.data.repository.MascotaRepository
@@ -56,6 +58,7 @@ import com.uth.proyectofinal.ui.common.SectionTitle
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.lps
 import com.uth.proyectofinal.ui.common.textoFecha
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -123,16 +126,35 @@ fun HistorialCitasMascotaScreen(
     onBack: () -> Unit,
 ) {
     val vm: HistorialCitasViewModel = viewModel(
-        factory = appFactory { HistorialCitasViewModel(mascotaId, it.mascotas, it.citas) }
+        factory = appFactory { HistorialCitasViewModel(mascotaId, it.mascotas, it.citas) },
     )
     val ui by vm.ui.collectAsStateWithLifecycle()
 
-    val puedeEditarObservaciones = rol == Rol.VETERINARIO || rol == Rol.ADMINISTRADOR
+    OnResume { vm.cargar() }
+
+    HistorialCitasMascotaContent(
+        ui = ui,
+        rol = rol,
+        onBack = onBack,
+        onRetry = vm::cargar,
+        onGuardarObservacion = { citaId, obs, onExito ->
+            vm.guardarObservacion(citaId, obs, onExito)
+        },
+    )
+}
+
+@Composable
+fun HistorialCitasMascotaContent(
+    ui: HistorialCitasUi,
+    rol: String? = null,
+    onBack: () -> Unit = {},
+    onRetry: () -> Unit = {},
+    onGuardarObservacion: (Int, String, () -> Unit) -> Unit = { _, _, _ -> },
+) {
+    val puedeEditarObservaciones = (rol == Rol.VETERINARIO || rol == Rol.ADMINISTRADOR)
 
     var citaParaObservacion by remember { mutableStateOf<Cita?>(null) }
     var textoObservacion by remember { mutableStateOf("") }
-
-    OnResume { vm.cargar() }
 
     AppScaffold(
         title = "Historial de citas",
@@ -142,8 +164,8 @@ fun HistorialCitasMascotaScreen(
             ui.cargando -> LoadingBox(Modifier.padding(padding))
             ui.error != null && ui.mascota == null -> ErrorBox(
                 ui.error ?: "Error al cargar el historial.",
-                vm::cargar,
-                Modifier.padding(padding)
+                onRetry,
+                Modifier.padding(padding),
             )
             else -> {
                 LazyColumn(
@@ -195,7 +217,7 @@ fun HistorialCitasMascotaScreen(
                                         .fillMaxWidth()
                                         .padding(top = 8.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                                     ),
                                 ) {
                                     Row(
@@ -253,7 +275,7 @@ fun HistorialCitasMascotaScreen(
                 Button(
                     onClick = {
                         if (textoObservacion.isNotBlank()) {
-                            vm.guardarObservacion(cita.id, textoObservacion.trim()) {
+                            onGuardarObservacion(cita.id, textoObservacion.trim()) {
                                 citaParaObservacion = null
                             }
                         }
@@ -443,5 +465,41 @@ private fun ConsultaDetalleBox(consulta: Consulta) {
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HistorialCitasMascotaScreenPreview() {
+    PetCareTheme {
+        HistorialCitasMascotaContent(
+            ui = HistorialCitasUi(
+                mascota = Mascota(
+                    id = 1,
+                    nombre = "Max",
+                    especie = Ref(1, "Perro"),
+                    raza = "Golden Retriever",
+                    pesoKg = 28.5,
+                ),
+                citas = listOf(
+                    Cita(
+                        id = 1,
+                        fecha = "2026-03-30",
+                        hora = "09:00",
+                        estado = "ATENDIDA",
+                        servicio = ServicioResumen(1, "Consulta General", 350.0),
+                        veterinario = Ref(1, "Dr. Carlos"),
+                        dueno = Ref(1, "Juan Pérez"),
+                        consulta = Consulta(
+                            id = 1,
+                            diagnostico = "Sin anomalías detectadas",
+                            observaciones = "Mascota en muy buen estado de salud.",
+                            peso = 28.5,
+                        ),
+                    ),
+                ),
+                cargando = false,
+            ),
+        )
     }
 }

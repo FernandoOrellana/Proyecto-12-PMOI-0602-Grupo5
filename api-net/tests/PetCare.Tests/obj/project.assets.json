@@ -4884,11 +4884,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/msi/Escritorio/local 2/PMO-0602/api-net/tests/PetCare.Tests/PetCare.Tests.csproj",
+      "projectUniqueName": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/tests/PetCare.Tests/PetCare.Tests.csproj",
       "projectName": "PetCare.Tests",
-      "projectPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/tests/PetCare.Tests/PetCare.Tests.csproj",
+      "projectPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/tests/PetCare.Tests/PetCare.Tests.csproj",
       "packagesPath": "/home/msi/.nuget/packages/",
-      "outputPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/tests/PetCare.Tests/obj/",
+      "outputPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/tests/PetCare.Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/msi/.nuget/NuGet/NuGet.Config"
@@ -4904,17 +4904,17 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Api/PetCare.Api.csproj": {
-              "projectPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Api/PetCare.Api.csproj"
+            "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Api/PetCare.Api.csproj": {
+              "projectPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Api/PetCare.Api.csproj"
             },
-            "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Application/PetCare.Application.csproj": {
-              "projectPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Application/PetCare.Application.csproj"
+            "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/PetCare.Application.csproj": {
+              "projectPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Application/PetCare.Application.csproj"
             },
-            "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj": {
-              "projectPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj"
+            "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj": {
+              "projectPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj"
             },
-            "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Infrastructure/PetCare.Infrastructure.csproj": {
-              "projectPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Infrastructure/PetCare.Infrastructure.csproj"
+            "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/PetCare.Infrastructure.csproj": {
+              "projectPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Infrastructure/PetCare.Infrastructure.csproj"
             }
           }
         }

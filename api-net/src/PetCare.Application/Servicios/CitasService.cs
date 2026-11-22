@@ -83,12 +83,25 @@ public class CitasService(
         return mapeador.Cita(cita);
     }
 
+    public async Task<CitaDto> IniciarConsultaAsync(Actor actor, int citaId, CancellationToken ct)
+    {
+        var cita = await Cargar(citaId, ct);
+        if (cita.VeterinarioId != actor.Id)
+            throw new ProhibidoException("Solo el veterinario asignado puede iniciar esta consulta");
+        if (cita.Estado == EstadoCita.EN_CONSULTA) return mapeador.Cita(cita);
+        if (cita.Estado is not (EstadoCita.PENDIENTE or EstadoCita.CONFIRMADA))
+            throw new ConflictoException("Esta cita ya fue atendida o cancelada");
+        cita.Estado = EstadoCita.EN_CONSULTA;
+        await uow.GuardarAsync(ct);
+        return mapeador.Cita(cita);
+    }
+
     public async Task<ConsultaDto> RegistrarConsultaAsync(Actor actor, int citaId, ConsultaRequest r, CancellationToken ct)
     {
         var cita = await Cargar(citaId, ct);
         if (cita.VeterinarioId != actor.Id)
             throw new ProhibidoException("Solo el veterinario asignado puede registrar esta consulta");
-        if (!Reglas.PuedeCancelar(cita.Estado)) throw new ConflictoException("Esta cita ya fue atendida o cancelada");
+        if (!Reglas.PuedeRegistrarConsulta(cita.Estado)) throw new ConflictoException("Esta cita ya fue atendida o cancelada");
 
         var consulta = new Consulta
         {
@@ -130,7 +143,7 @@ public class CitasService(
                 Diagnostico = "Consulta médica",
                 Observaciones = observaciones?.Trim(),
             };
-            if (cita.Estado == EstadoCita.PENDIENTE || cita.Estado == EstadoCita.CONFIRMADA)
+            if (cita.Estado == EstadoCita.PENDIENTE || cita.Estado == EstadoCita.CONFIRMADA || cita.Estado == EstadoCita.EN_CONSULTA)
             {
                 cita.Estado = EstadoCita.ATENDIDA;
             }

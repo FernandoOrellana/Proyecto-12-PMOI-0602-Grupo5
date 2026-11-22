@@ -2,6 +2,7 @@ package com.uth.proyectofinal.ui.dueno
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,11 +39,12 @@ import com.uth.proyectofinal.ui.common.EmptyBox
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.lps
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -96,6 +99,29 @@ fun CarritoScreen(onBack: () -> Unit, onPedidoCreado: () -> Unit) {
     val total by vm.total.collectAsStateWithLifecycle()
     val ui by vm.ui.collectAsStateWithLifecycle()
 
+    CarritoContent(
+        items = items,
+        total = total,
+        ui = ui,
+        onBack = onBack,
+        onPedidoCreado = onPedidoCreado,
+        onCambiarCantidad = vm::cambiarCantidad,
+        onQuitar = vm::quitar,
+        onConfirmar = vm::confirmar,
+    )
+}
+
+@Composable
+fun CarritoContent(
+    items: List<CartItem>,
+    total: Double,
+    ui: CarritoUi,
+    onBack: () -> Unit = {},
+    onPedidoCreado: () -> Unit = {},
+    onCambiarCantidad: (Int, Int) -> Unit = { _, _ -> },
+    onQuitar: (Int) -> Unit = {},
+    onConfirmar: () -> Unit = {},
+) {
     AppScaffold(title = "Carrito", onBack = onBack) { padding ->
         if (items.isEmpty()) {
             EmptyBox("Tu carrito está vacío.", Modifier.padding(padding))
@@ -103,18 +129,18 @@ fun CarritoScreen(onBack: () -> Unit, onPedidoCreado: () -> Unit) {
             Column(Modifier.padding(padding).fillMaxSize()) {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+                    contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(items, key = { it.productoId }) { item ->
-                        CartRow(item, vm)
+                        CartRow(item, onCambiarCantidad, onQuitar)
                     }
                 }
                 Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("Total: ${total.lps()}", style = MaterialTheme.typography.titleLarge)
                     Text("Pague en mostrador al recoger su pedido.", style = MaterialTheme.typography.bodyMedium)
                     ErrorText(ui.error)
-                    ActionButton("Confirmar pedido", ui.enviando, vm::confirmar)
+                    ActionButton("Confirmar pedido", ui.enviando, onConfirmar)
                 }
             }
         }
@@ -132,7 +158,11 @@ fun CarritoScreen(onBack: () -> Unit, onPedidoCreado: () -> Unit) {
 }
 
 @Composable
-private fun CartRow(item: CartItem, vm: CarritoViewModel) {
+private fun CartRow(
+    item: CartItem,
+    onCambiarCantidad: (Int, Int) -> Unit,
+    onQuitar: (Int) -> Unit,
+) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(12.dp).fillMaxWidth(),
@@ -142,15 +172,30 @@ private fun CartRow(item: CartItem, vm: CarritoViewModel) {
                 Text(item.nombre, style = MaterialTheme.typography.titleSmall)
                 Text("${item.precio.lps()} c/u · Subtotal ${(item.precio * item.cantidad).lps()}", style = MaterialTheme.typography.bodySmall)
             }
-            TextButton(onClick = { vm.cambiarCantidad(item.productoId, item.cantidad - 1) }) { Text("−") }
+            TextButton(onClick = { onCambiarCantidad(item.productoId, item.cantidad - 1) }) { Text("−") }
             Text("${item.cantidad}")
             TextButton(
-                onClick = { vm.cambiarCantidad(item.productoId, item.cantidad + 1) },
+                onClick = { onCambiarCantidad(item.productoId, item.cantidad + 1) },
                 enabled = item.cantidad < item.stock,
             ) { Text("+") }
-            IconButton(onClick = { vm.quitar(item.productoId) }) {
+            IconButton(onClick = { onQuitar(item.productoId) }) {
                 Icon(Icons.Default.Delete, contentDescription = "Eliminar")
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CarritoScreenPreview() {
+    PetCareTheme {
+        CarritoContent(
+            items = listOf(
+                CartItem(productoId = 1, nombre = "Alimento Canino 5kg", precio = 450.0, stock = 10, imagenUrl = null, cantidad = 1),
+                CartItem(productoId = 2, nombre = "Champú para Perros 500ml", precio = 180.0, stock = 5, imagenUrl = null, cantidad = 2),
+            ),
+            total = 810.0,
+            ui = CarritoUi(),
+        )
     }
 }

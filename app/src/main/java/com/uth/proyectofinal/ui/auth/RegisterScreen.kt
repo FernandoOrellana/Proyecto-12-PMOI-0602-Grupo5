@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,6 +25,7 @@ import com.uth.proyectofinal.ui.common.AppTextField
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.opcional
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,6 +84,27 @@ fun RegisterScreen(onBack: () -> Unit, onRegistered: (String) -> Unit) {
         ui.registrado?.let(onRegistered)
     }
 
+    RegisterContent(
+        ui = ui,
+        onBack = onBack,
+        onNombre = vm::onNombre,
+        onEmail = vm::onEmail,
+        onTelefono = vm::onTelefono,
+        onPassword = vm::onPassword,
+        onRegistrar = vm::registrar,
+    )
+}
+
+@Composable
+fun RegisterContent(
+    ui: RegisterUi,
+    onBack: () -> Unit = {},
+    onNombre: (String) -> Unit = {},
+    onEmail: (String) -> Unit = {},
+    onTelefono: (String) -> Unit = {},
+    onPassword: (String) -> Unit = {},
+    onRegistrar: () -> Unit = {},
+) {
     AppScaffold(title = "Crear cuenta", onBack = onBack) { padding ->
         Column(
             modifier = Modifier
@@ -91,12 +114,26 @@ fun RegisterScreen(onBack: () -> Unit, onRegistered: (String) -> Unit) {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AppTextField(ui.nombre, vm::onNombre, "Nombre completo")
-            AppTextField(ui.email, vm::onEmail, "Correo electrónico", keyboard = KeyboardType.Email)
-            AppTextField(ui.telefono, vm::onTelefono, "Teléfono (opcional)", keyboard = KeyboardType.Phone)
-            AppTextField(ui.password, vm::onPassword, "Contraseña (mínimo 8 caracteres)", password = true)
+            AppTextField(ui.nombre, onNombre, "Nombre completo")
+            AppTextField(ui.email, onEmail, "Correo electrónico", keyboard = KeyboardType.Email)
+            AppTextField(ui.telefono, onTelefono, "Teléfono (opcional)", keyboard = KeyboardType.Phone)
+            AppTextField(ui.password, onPassword, "Contraseña (mínimo 8 caracteres)", password = true)
             ErrorText(ui.error)
-            ActionButton("Registrarme", ui.loading, vm::registrar)
+            ActionButton("Registrarme", ui.loading, onRegistrar)
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RegisterScreenPreview() {
+    PetCareTheme {
+        RegisterContent(
+            ui = RegisterUi(
+                nombre = "Juan Pérez",
+                email = "juan@ejemplo.com",
+                telefono = "9999-8888",
+            ),
+        )
     }
 }

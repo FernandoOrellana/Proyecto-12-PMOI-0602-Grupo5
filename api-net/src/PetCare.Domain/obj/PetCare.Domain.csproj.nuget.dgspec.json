@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj": {}
+    "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj": {}
   },
   "projects": {
-    "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj": {
+    "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj",
+        "projectUniqueName": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj",
         "projectName": "PetCare.Domain",
-        "projectPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj",
+        "projectPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/PetCare.Domain.csproj",
         "packagesPath": "/home/msi/.nuget/packages/",
-        "outputPath": "/home/msi/Escritorio/local 2/PMO-0602/api-net/src/PetCare.Domain/obj/",
+        "outputPath": "/home/msi/Escritorio/jennifer/PMO-0602/api-net/src/PetCare.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/msi/.nuget/NuGet/NuGet.Config"

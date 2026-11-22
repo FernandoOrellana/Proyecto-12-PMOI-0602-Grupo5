@@ -1,6 +1,6 @@
 {
-  "PetCare.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/local 2\/PMO-0602\/api-net\/src\/PetCare.Api",
-  "PetCare.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/local 2\/PMO-0602\/api-net\/src\/PetCare.Application",
-  "PetCare.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/local 2\/PMO-0602\/api-net\/src\/PetCare.Domain",
-  "PetCare.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/local 2\/PMO-0602\/api-net\/src\/PetCare.Infrastructure"
+  "PetCare.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/jennifer\/PMO-0602\/api-net\/src\/PetCare.Api",
+  "PetCare.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/jennifer\/PMO-0602\/api-net\/src\/PetCare.Application",
+  "PetCare.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/jennifer\/PMO-0602\/api-net\/src\/PetCare.Domain",
+  "PetCare.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/msi\/Escritorio\/jennifer\/PMO-0602\/api-net\/src\/PetCare.Infrastructure"
 }

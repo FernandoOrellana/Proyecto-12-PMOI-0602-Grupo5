@@ -137,7 +137,8 @@ public class CitaRepositorio(PetCareDbContext db) : ICitaRepositorio
     {
         var filas = await db.Citas
             .Where(c => c.VeterinarioId == veterinarioId && c.Fecha == fecha
-                && (c.Estado == EstadoCita.PENDIENTE || c.Estado == EstadoCita.CONFIRMADA || c.Estado == EstadoCita.ATENDIDA))
+                && (c.Estado == EstadoCita.PENDIENTE || c.Estado == EstadoCita.CONFIRMADA
+                    || c.Estado == EstadoCita.EN_CONSULTA || c.Estado == EstadoCita.ATENDIDA))
             .Select(c => new { c.Hora, Duracion = c.Servicio.DuracionMin })
             .ToListAsync(ct);
         return filas.Select(f => new Ocupacion(f.Hora, f.Duracion)).ToList();

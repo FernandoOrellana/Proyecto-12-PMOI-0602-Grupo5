@@ -12,18 +12,18 @@
 9-->INJECTED
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:5:5-67
-11-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:5:22-64
+11-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:5:5-67
+11-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:5:22-64
 12    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-12-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:6:5-77
-12-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:6:22-74
+12-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:6:5-77
+12-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:6:22-74
 13
 14    <uses-feature
-14-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:8:5-10:36
+14-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:8:5-10:36
 15        android:name="android.hardware.camera"
-15-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:9:9-47
+15-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:9:9-47
 16        android:required="false" />
-16-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:10:9-33
+16-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:10:9-33
 17
 18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 18-->[com.google.firebase:firebase-messaging:26.0.2] /home/msi/.gradle/caches/9.6.0/transforms/c789dac931ab09312acf304b86475946/transformed/firebase-messaging-26.0.2/AndroidManifest.xml:22:5-79
@@ -47,105 +47,105 @@
 26-->[androidx.core:core:1.19.1] /home/msi/.gradle/caches/9.6.0/transforms/96ab8f523f154c3faf0b53f68259ad0f/transformed/core-1.19.1/AndroidManifest.xml:26:22-94
 27
 28    <application
-28-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:12:5-63:19
+28-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:12:5-63:19
 29        android:name="com.uth.proyectofinal.PetCareApp"
-29-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:13:9-35
+29-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:13:9-35
 30        android:allowBackup="true"
-30-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:14:9-35
+30-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:14:9-35
 31        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 31-->[androidx.core:core:1.19.1] /home/msi/.gradle/caches/9.6.0/transforms/96ab8f523f154c3faf0b53f68259ad0f/transformed/core-1.19.1/AndroidManifest.xml:28:18-86
 32        android:dataExtractionRules="@xml/data_extraction_rules"
-32-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:15:9-65
+32-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:15:9-65
 33        android:debuggable="true"
 34        android:extractNativeLibs="false"
 34-->INJECTED
 35        android:fullBackupContent="@xml/backup_rules"
-35-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:16:9-54
-36        android:icon="@mipmap/ic_launcher"
-36-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:17:9-43
+35-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:16:9-54
+36        android:icon="@drawable/logo"
+36-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:17:9-38
 37        android:label="@string/app_name"
-37-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:18:9-41
+37-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:18:9-41
 38        android:networkSecurityConfig="@xml/network_security_config"
-38-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:22:9-69
-39        android:roundIcon="@mipmap/ic_launcher_round"
-39-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:19:9-54
+38-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:22:9-69
+39        android:roundIcon="@drawable/logo"
+39-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:19:9-43
 40        android:supportsRtl="true"
-40-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:20:9-35
+40-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:20:9-35
 41        android:testOnly="true"
 42        android:theme="@style/Theme.ProyectoFinal"
-42-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:23:9-51
+42-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:23:9-51
 43        android:usesCleartextTraffic="true" >
-43-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:21:9-44
+43-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:21:9-44
 44        <activity
-44-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:24:9-34:20
+44-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:24:9-34:20
 45            android:name="com.uth.proyectofinal.MainActivity"
-45-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:25:13-41
+45-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:25:13-41
 46            android:exported="true"
-46-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:26:13-36
+46-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:26:13-36
 47            android:launchMode="singleTop"
-47-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:27:13-43
+47-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:27:13-43
 48            android:windowSoftInputMode="adjustResize" >
-48-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:28:13-55
+48-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:28:13-55
 49            <intent-filter>
-49-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:29:13-33:29
+49-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:29:13-33:29
 50                <action android:name="android.intent.action.MAIN" />
-50-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:30:17-69
-50-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:30:25-66
+50-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:30:17-69
+50-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:30:25-66
 51
 52                <category android:name="android.intent.category.LAUNCHER" />
-52-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:32:17-77
-52-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:32:27-74
+52-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:32:17-77
+52-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:32:27-74
 53            </intent-filter>
 54        </activity>
 55
 56        <provider
 56-->INJECTED
 57            android:name="androidx.core.content.FileProvider"
-57-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:37:13-62
+57-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:37:13-62
 58            android:authorities="com.uth.proyectofinal.archivos"
 58-->INJECTED
 59            android:exported="false"
-59-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:39:13-37
+59-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:39:13-37
 60            android:grantUriPermissions="true" >
-60-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:40:13-47
+60-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:40:13-47
 61            <meta-data
-61-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:41:13-43:54
+61-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:41:13-43:54
 62                android:name="android.support.FILE_PROVIDER_PATHS"
-62-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:42:17-67
+62-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:42:17-67
 63                android:resource="@xml/file_paths" />
-63-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:43:17-51
+63-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:43:17-51
 64        </provider>
 65
 66        <meta-data
-66-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:46:9-48:53
+66-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:46:9-48:53
 67            android:name="com.google.firebase.messaging.default_notification_channel_id"
-67-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:47:13-89
+67-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:47:13-89
 68            android:value="petcare_recordatorios" />
-68-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:48:13-50
+68-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:48:13-50
 69        <meta-data
-69-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:49:9-51:60
+69-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:49:9-51:60
 70            android:name="com.google.firebase.messaging.default_notification_icon"
-70-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:50:13-83
+70-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:50:13-83
 71            android:resource="@drawable/ic_notificacion" />
-71-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:51:13-57
+71-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:51:13-57
 72        <meta-data
-72-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:52:9-54:54
+72-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:52:9-54:54
 73            android:name="com.google.firebase.messaging.default_notification_color"
-73-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:53:13-84
+73-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:53:13-84
 74            android:resource="@color/notificacion" />
-74-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:54:13-51
+74-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:54:13-51
 75
 76        <service
-76-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:56:9-62:19
+76-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:56:9-62:19
 77            android:name="com.uth.proyectofinal.push.FcmService"
-77-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:57:13-44
+77-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:57:13-44
 78            android:exported="false" >
-78-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:58:13-37
+78-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:58:13-37
 79            <intent-filter>
-79-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:59:13-61:29
+79-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:59:13-61:29
 80                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-80-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:60:17-78
-80-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:60:25-75
+80-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:60:17-78
+80-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:60:25-75
 81            </intent-filter>
 82        </service>
 83
@@ -191,10 +191,10 @@
 107            android:exported="false" >
 107-->[com.google.firebase:firebase-messaging:26.0.2] /home/msi/.gradle/caches/9.6.0/transforms/c789dac931ab09312acf304b86475946/transformed/firebase-messaging-26.0.2/AndroidManifest.xml:49:13-37
 108            <intent-filter android:priority="-500" >
-108-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:59:13-61:29
+108-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:59:13-61:29
 109                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-109-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:60:17-78
-109-->/home/msi/Escritorio/local 2v3/app/src/main/AndroidManifest.xml:60:25-75
+109-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:60:17-78
+109-->/home/msi/Escritorio/jennifer/PMO-0602/app/src/main/AndroidManifest.xml:60:25-75
 110            </intent-filter>
 111        </service>
 112        <service

@@ -71,10 +71,7 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Description = "Token de acceso obtenido en /api/auth/login",
     });
-    c.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
-    {
-        [new OpenApiSecuritySchemeReference("bearerAuth", doc)] = [],
-    });
+    c.OperationFilter<SeguridadOperacionFiltro>();
 });
 
 Directory.CreateDirectory(carpetaUploads);

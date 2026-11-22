@@ -15,6 +15,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,8 @@ import com.uth.proyectofinal.ui.common.PagedColumn
 import com.uth.proyectofinal.ui.common.PagedState
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.textoFecha
+import com.uth.proyectofinal.ui.theme.PetCareTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -78,12 +81,31 @@ fun NotificacionesScreen(onBack: () -> Unit) {
 
     OnResume { vm.cargar() }
 
+    NotificacionesContent(
+        state = state,
+        messages = vm.messages,
+        onBack = onBack,
+        onProbar = vm::probar,
+        onLoadMore = vm::cargar,
+        onMarcarLeida = vm::marcarLeida,
+    )
+}
+
+@Composable
+fun NotificacionesContent(
+    state: PagedState<Notificacion>,
+    messages: Flow<String>? = null,
+    onBack: () -> Unit = {},
+    onProbar: () -> Unit = {},
+    onLoadMore: () -> Unit = {},
+    onMarcarLeida: (Int) -> Unit = {},
+) {
     AppScaffold(
         title = "Notificaciones",
         onBack = onBack,
-        messages = vm.messages,
+        messages = messages,
         actions = {
-            IconButton(onClick = vm::probar) {
+            IconButton(onClick = onProbar) {
                 Icon(Icons.Filled.Notifications, contentDescription = "Enviar notificación de prueba")
             }
         },
@@ -91,7 +113,7 @@ fun NotificacionesScreen(onBack: () -> Unit) {
         PagedColumn(
             state = state,
             emptyText = "No tienes notificaciones.",
-            onLoadMore = vm::cargar,
+            onLoadMore = onLoadMore,
             modifier = Modifier.padding(padding),
         ) { n ->
             Card(modifier = Modifier.fillMaxWidth()) {
@@ -104,10 +126,37 @@ fun NotificacionesScreen(onBack: () -> Unit) {
                     Text(n.mensaje, style = MaterialTheme.typography.bodyMedium)
                     Text(n.fecha.textoFecha(), style = MaterialTheme.typography.labelSmall)
                     if (!n.leida) {
-                        TextButton(onClick = { vm.marcarLeida(n.id) }) { Text("Marcar como leída") }
+                        TextButton(onClick = { onMarcarLeida(n.id) }) { Text("Marcar como leída") }
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NotificacionesScreenPreview() {
+    PetCareTheme {
+        NotificacionesContent(
+            state = PagedState(
+                items = listOf(
+                    Notificacion(
+                        id = 1,
+                        titulo = "Recordatorio de cita",
+                        mensaje = "Tienes una cita mañana a las 10:00 AM.",
+                        fecha = "2026-03-30T09:00:00Z",
+                        leida = false,
+                    ),
+                    Notificacion(
+                        id = 2,
+                        titulo = "Resultado de vacuna",
+                        mensaje = "Se ha registrado la vacuna de Rabia.",
+                        fecha = "2026-03-29T15:30:00Z",
+                        leida = true,
+                    ),
+                ),
+            ),
+        )
     }
 }

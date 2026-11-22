@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uth.proyectofinal.data.repository.AuthRepository
 import com.uth.proyectofinal.push.PushRegistrar
 import com.uth.proyectofinal.ui.navigation.Routes
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 
 @Composable
 fun SplashScreen(auth: AuthRepository, push: PushRegistrar, onReady: (String) -> Unit) {
@@ -27,6 +29,11 @@ fun SplashScreen(auth: AuthRepository, push: PushRegistrar, onReady: (String) ->
             onReady(Routes.LOGIN)
         }
     }
+    SplashContent()
+}
+
+@Composable
+fun SplashContent() {
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -34,5 +41,13 @@ fun SplashScreen(auth: AuthRepository, push: PushRegistrar, onReady: (String) ->
     ) {
         Text("PetCare HN", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
         CircularProgressIndicator(modifier = Modifier.padding(top = 24.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SplashScreenPreview() {
+    PetCareTheme {
+        SplashContent()
     }
 }

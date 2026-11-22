@@ -44,6 +44,11 @@ public class CitasController(
     public async Task<IActionResult> Cancelar(int id, CancellationToken ct) =>
         Respuesta(await citas.CancelarAsync(Actor, id, ct));
 
+    [HttpPatch("{id:int}/iniciar")]
+    [Authorize(Roles = Roles.Veterinario)]
+    public async Task<IActionResult> IniciarConsulta(int id, CancellationToken ct) =>
+        Respuesta(await citas.IniciarConsultaAsync(Actor, id, ct));
+
     [HttpPost("{id:int}/consulta")]
     [Authorize(Roles = Roles.Veterinario)]
     public async Task<IActionResult> RegistrarConsulta(int id, [FromBody] ConsultaRequest r, CancellationToken ct)

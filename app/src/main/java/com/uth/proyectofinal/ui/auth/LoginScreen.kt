@@ -17,11 +17,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.uth.proyectofinal.data.repository.ApiResult
 import com.uth.proyectofinal.data.repository.AuthRepository
 import com.uth.proyectofinal.push.PushRegistrar
@@ -30,6 +31,7 @@ import com.uth.proyectofinal.ui.common.AppScaffold
 import com.uth.proyectofinal.ui.common.AppTextField
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.appFactory
+import com.uth.proyectofinal.ui.theme.PetCareTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -96,6 +98,27 @@ fun LoginScreen(
         ui.rol?.let(onLoggedIn)
     }
 
+    LoginContent(
+        ui = ui,
+        onEmailChange = vm::onEmail,
+        onPasswordChange = vm::onPassword,
+        onLogin = vm::login,
+        onRegister = onRegister,
+        onForgot = onForgot,
+        onVerify = onVerify,
+    )
+}
+
+@Composable
+fun LoginContent(
+    ui: LoginUi,
+    onEmailChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {},
+    onLogin: () -> Unit = {},
+    onRegister: () -> Unit = {},
+    onForgot: () -> Unit = {},
+    onVerify: (String) -> Unit = {},
+) {
     AppScaffold(title = "Iniciar sesión") { padding ->
         Column(
             modifier = Modifier
@@ -111,13 +134,13 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
             AppTextField(
                 value = ui.email,
-                onValueChange = vm::onEmail,
+                onValueChange = onEmailChange,
                 label = "Correo electrónico",
                 keyboard = KeyboardType.Email,
             )
             AppTextField(
                 value = ui.password,
-                onValueChange = vm::onPassword,
+                onValueChange = onPasswordChange,
                 label = "Contraseña",
                 password = true,
             )
@@ -125,9 +148,21 @@ fun LoginScreen(
             if (ui.sinVerificar) {
                 TextButton(onClick = { onVerify(ui.email.trim()) }) { Text("Verificar mi correo") }
             }
-            ActionButton("Iniciar sesión", ui.loading, vm::login)
+            ActionButton("Iniciar sesión", ui.loading, onLogin)
             TextButton(onClick = onRegister) { Text("Crear cuenta") }
             TextButton(onClick = onForgot) { Text("¿Olvidaste tu contraseña?") }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LoginScreenPreview() {
+    PetCareTheme {
+        LoginContent(
+            ui = LoginUi(
+                email = "usuario@ejemplo.com",
+            ),
+        )
     }
 }

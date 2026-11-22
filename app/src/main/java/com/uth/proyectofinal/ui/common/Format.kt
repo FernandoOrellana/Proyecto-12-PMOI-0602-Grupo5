@@ -2,7 +2,9 @@ package com.uth.proyectofinal.ui.common
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 private val FECHA_REGEX = Regex("""\d{4}-\d{2}-\d{2}""")
 private val HORA_REGEX = Regex("""\d{2}:\d{2}""")
@@ -30,3 +32,16 @@ fun primerDiaDelMes(): String =
     isoFecha(Calendar.getInstance().apply { set(Calendar.DAY_OF_MONTH, 1) })
 
 fun String?.textoFecha(): String = this?.replace('T', ' ')?.take(16).orEmpty()
+
+/** Convierte "yyyy-MM-dd" a milisegundos en UTC para usar con DatePicker. */
+fun String.aMillisUtc(): Long? = runCatching {
+    SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        .apply { timeZone = TimeZone.getTimeZone("UTC") }
+        .parse(this)?.time
+}.getOrNull()
+
+/** Convierte milisegundos (UTC) a "yyyy-MM-dd". */
+fun Long.aFechaIso(): String =
+    SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        .apply { timeZone = TimeZone.getTimeZone("UTC") }
+        .format(Date(this))
