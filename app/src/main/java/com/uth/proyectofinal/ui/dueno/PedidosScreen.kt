@@ -37,7 +37,7 @@ class PedidosViewModel(private val tienda: TiendaRepository) : PagedViewModel<Pe
 }
 
 @Composable
-fun PedidosScreen(onOpen: (Int) -> Unit) {
+fun PedidosScreen(onBack: () -> Unit, onOpen: (Int) -> Unit) {
     val vm: PedidosViewModel = viewModel(factory = appFactory { PedidosViewModel(it.tienda) })
     val state by vm.state.collectAsStateWithLifecycle()
 
@@ -45,6 +45,7 @@ fun PedidosScreen(onOpen: (Int) -> Unit) {
 
     PedidosContent(
         state = state,
+        onBack = onBack,
         onOpen = onOpen,
         onLoadMore = vm::loadMore,
         onRefresh = vm::pullRefresh,
@@ -54,11 +55,12 @@ fun PedidosScreen(onOpen: (Int) -> Unit) {
 @Composable
 fun PedidosContent(
     state: PagedState<Pedido>,
+    onBack: () -> Unit = {},
     onOpen: (Int) -> Unit = {},
     onLoadMore: () -> Unit = {},
     onRefresh: (() -> Unit)? = null,
 ) {
-    AppScaffold(title = "Mis pedidos") { padding ->
+    AppScaffold(title = "Mis pedidos", onBack = onBack) { padding ->
         PagedColumn(
             state = state,
             emptyText = "Aún no tienes pedidos.",

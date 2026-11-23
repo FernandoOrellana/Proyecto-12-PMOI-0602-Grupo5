@@ -331,13 +331,14 @@ private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String)
             composable(Routes.CARRITO) {
                 CarritoScreen(
                     onBack = { nav.popBackStack() },
+                    onPedidos = { nav.navigate(Routes.PEDIDOS) },
                     onPedidoCreado = {
                         nav.navigate(Routes.PEDIDOS) { popUpTo(Routes.TIENDA) }
                     },
                 )
             }
             composable(Routes.PEDIDOS) {
-                PedidosScreen(onOpen = { nav.navigate(Routes.pedido(it)) })
+                PedidosScreen(onBack = { nav.popBackStack() }, onOpen = { nav.navigate(Routes.pedido(it)) })
             }
             composable(Routes.PEDIDO, arguments = intArgs("id")) {
                 PedidoDetailScreen(id = it.int("id"), onBack = { nav.popBackStack() })
