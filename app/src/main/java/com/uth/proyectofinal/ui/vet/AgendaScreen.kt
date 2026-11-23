@@ -45,6 +45,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
+import com.uth.proyectofinal.data.remote.dto.CitaEstado
+import com.uth.proyectofinal.ui.common.DiasSelector
+import com.uth.proyectofinal.ui.common.fechaCorta
+import com.uth.proyectofinal.ui.common.textoCuando
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class AgendaViewModel(private val citas: CitaRepository) : PagedViewModel<Cita>() {
@@ -92,31 +109,69 @@ fun AgendaContent(
 ) {
     var mostrarCalendario by remember { mutableStateOf(false) }
 
-    AppScaffold(title = "Agenda", messages = messages) { padding ->
+    val hoy = isoFecha()
+    val ahora = SimpleDateFormat("HH:mm", Locale.US).format(Date())
+    val primeraFutura = if (fecha == hoy) state.items.firstOrNull { it.hora >= ahora }?.id else null
+
+    AppScaffold(
+        title = "Agenda",
+        messages = messages,
+        actions = {
+            if (fecha != hoy) TextButton(onClick = { onCambiarFecha(hoy) }) { Text("Hoy") }
+        },
+    ) { padding ->
         Column(Modifier.padding(padding)) {
-            Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Agenda del $fecha", style = MaterialTheme.typography.titleMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    OutlinedButton(onClick = { mostrarCalendario = true }, modifier = Modifier.weight(1f)) {
-                        Text("Elegir fecha")
-                    }
-                    OutlinedButton(onClick = { onCambiarFecha(isoFecha()) }) { Text("Hoy") }
-                }
-            }
+            DiasSelector(
+                fecha = fecha,
+                onFecha = onCambiarFecha,
+                desde = -3,
+                dias = 17,
+                onOtraFecha = { mostrarCalendario = true },
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+            Text(
+                "${textoCuando(fecha)} · ${fechaCorta(fecha)} · ${state.items.size} citas",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            )
             PagedColumn(
                 state = state,
                 emptyText = "No hay citas para esta fecha.",
                 onLoadMore = onLoadMore,
                 onRefresh = onRefresh,
             ) { cita ->
-                Card(onClick = { onOpen(cita.id) }, modifier = Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(cita.hora, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                            EstadoBadge(cita.estado)
+                Column {
+                    if (cita.id == primeraFutura) LineaAhora(ahora)
+                    Row(verticalAlignment = Alignment.Top) {
+                        Text(
+                            cita.hora,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.width(52.dp).padding(top = 14.dp),
+                        )
+                        Card(
+                            onClick = { onOpen(cita.id) },
+                            modifier = Modifier.weight(1f),
+                            colors = CardDefaults.cardColors(containerColor = fondoCita(cita.estado)),
+                        ) {
+                            Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        "${cita.mascota.nombre} · ${cita.servicio.nombre}",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                    EstadoBadge(cita.estado)
+                                }
+                                Text(
+                                    cita.dueno?.nombre.orEmpty(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
-                        Text("Mascota: ${cita.mascota.nombre} (dueño: ${cita.dueno?.nombre.orEmpty()})")
-                        Text("Servicio: ${cita.servicio.nombre}", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -140,6 +195,31 @@ fun AgendaContent(
             DatePicker(state = picker, title = { Text("Elige la fecha") })
         }
     }
+}
+
+@Composable
+private fun LineaAhora(hora: String) {
+    Row(
+        Modifier.fillMaxWidth().padding(bottom = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            hora,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.width(52.dp),
+        )
+        Box(Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.error))
+        Box(Modifier.weight(1f).height(2.dp).background(MaterialTheme.colorScheme.error))
+    }
+}
+
+@Composable
+private fun fondoCita(estado: String): Color = when (estado) {
+    CitaEstado.ATENDIDA -> Color(0xFFE3F5EC)
+    CitaEstado.EN_CONSULTA -> Color(0xFFE6F0FB)
+    CitaEstado.CANCELADA -> MaterialTheme.colorScheme.surfaceVariant
+    else -> MaterialTheme.colorScheme.surface
 }
 
 @Preview(showBackground = true)

@@ -1,6 +1,8 @@
 package com.uth.proyectofinal.ui.perfil
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,6 +50,7 @@ import androidx.compose.ui.Alignment
 import com.uth.proyectofinal.data.remote.dto.Rol
 import com.uth.proyectofinal.ui.common.Avatar
 import com.uth.proyectofinal.ui.common.EstadoBadge
+import com.uth.proyectofinal.ui.common.VeterinariaCard
 
 class PerfilViewModel(private val auth: AuthRepository) : ViewModel() {
 
@@ -97,7 +100,7 @@ fun PerfilContent(
 
     AppScaffold(title = "Perfil") { padding ->
         Column(
-            modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),
+            modifier = Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Card(Modifier.fillMaxWidth()) {
@@ -116,6 +119,7 @@ fun PerfilContent(
                     }
                 }
             }
+            VeterinariaCard()
             Spacer(Modifier.height(4.dp))
             Button(
                 onClick = onNotificaciones,

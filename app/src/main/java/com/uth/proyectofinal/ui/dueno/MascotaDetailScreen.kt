@@ -59,6 +59,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import com.uth.proyectofinal.data.remote.dto.ProximaDosis
+import com.uth.proyectofinal.ui.common.AccesoRapido
+import com.uth.proyectofinal.ui.common.Seccion
+import com.uth.proyectofinal.ui.common.diasHasta
+import com.uth.proyectofinal.ui.common.fechaCorta
 
 data class MascotaDetailUi(
     val mascota: Mascota? = null,
@@ -66,6 +83,7 @@ data class MascotaDetailUi(
     val error: String? = null,
     val ocupado: Boolean = false,
     val eliminada: Boolean = false,
+    val proximas: List<ProximaDosis> = emptyList(),
 )
 
 class MascotaDetailViewModel(
@@ -82,6 +100,10 @@ class MascotaDetailViewModel(
             when (val result = mascotas.get(id)) {
                 is ApiResult.Success -> _ui.update { it.copy(mascota = result.data, cargando = false) }
                 is ApiResult.Error -> _ui.update { it.copy(cargando = false, error = result.message) }
+            }
+            val carne = mascotas.carne(id)
+            if (carne is ApiResult.Success) {
+                _ui.update { it.copy(proximas = carne.data.proximasDosis.sortedBy { d -> d.fecha }) }
             }
         }
     }
@@ -123,6 +145,7 @@ fun MascotaDetailScreen(
     onCarne: (Int) -> Unit,
     onHistorialCitas: (Int) -> Unit,
     onDeleted: () -> Unit,
+    onAgendar: () -> Unit = {},
 ) {
     val vm: MascotaDetailViewModel = viewModel(factory = appFactory { MascotaDetailViewModel(id, it.mascotas) })
     val ui by vm.ui.collectAsStateWithLifecycle()
@@ -147,9 +170,11 @@ fun MascotaDetailScreen(
         onRetry = vm::cargar,
         onFotoSelected = { uri -> scope.launch { vm.subirFoto(context.imagenPart(uri, "foto")) } },
         onEliminar = vm::eliminar,
+        onAgendar = onAgendar,
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MascotaDetailContent(
     id: Int,
@@ -163,6 +188,7 @@ fun MascotaDetailContent(
     onRetry: () -> Unit = {},
     onFotoSelected: (Uri) -> Unit = {},
     onEliminar: () -> Unit = {},
+    onAgendar: () -> Unit = {},
 ) {
     var confirmar by remember { mutableStateOf(false) }
     val esDueno = rol == null || rol == Rol.DUENO
@@ -183,17 +209,17 @@ fun MascotaDetailContent(
                 Column(
                     modifier = Modifier
                         .padding(padding)
-                        .padding(16.dp)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Box(
                         modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth()
                             .height(220.dp)
-                            .clip(RoundedCornerShape(16.dp)),
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
                         contentAlignment = Alignment.Center,
                     ) {
                         if (m.fotoUrl != null) {
@@ -204,36 +230,54 @@ fun MascotaDetailContent(
                                 modifier = Modifier.fillMaxSize(),
                             )
                         } else {
-                            Text("Sin foto", style = MaterialTheme.typography.bodyLarge)
+                            Icon(
+                                Icons.Default.Favorite,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(64.dp),
+                            )
                         }
                     }
-                    if (esDueno) {
-                        FotoSelector(
-                            enabled = !ui.ocupado,
-                            onFoto = onFotoSelected,
-                        )
+                    Column(
+                        Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        if (esDueno) {
+                            FotoSelector(enabled = !ui.ocupado, onFoto = onFotoSelected)
+                        }
+                        Text(m.nombre, style = MaterialTheme.typography.headlineSmall)
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            listOfNotNull(
+                                m.especie?.nombre,
+                                m.raza,
+                                m.fechaNacimiento?.let { edadTexto(it) },
+                                m.pesoKg?.let { "$it kg" },
+                            ).forEach { dato -> DatoChip(dato) }
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (esDueno) {
+                                AccesoRapido(Icons.Default.Add, "Agendar", onAgendar, Modifier.weight(1f))
+                            }
+                            AccesoRapido(Icons.Default.Favorite, "Carné", { onCarne(id) }, Modifier.weight(1f))
+                            AccesoRapido(Icons.Default.DateRange, "Citas", { onHistorialCitas(id) }, Modifier.weight(1f))
+                        }
+                        if (ui.proximas.isNotEmpty()) {
+                            Seccion("Próximas dosis")
+                            ui.proximas.forEach { dosis -> DosisFila(dosis) }
+                        }
+                        if (esDueno) {
+                            TextButton(
+                                onClick = { confirmar = true },
+                                enabled = !ui.ocupado,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text("Eliminar mascota", color = MaterialTheme.colorScheme.error)
+                            }
+                        }
                     }
-
-                    Text("Especie: ${m.especie?.nombre.orEmpty()}", style = MaterialTheme.typography.bodyLarge)
-                    Text("Raza: ${m.raza ?: "No registrada"}", style = MaterialTheme.typography.bodyLarge)
-                    Text("Nacimiento: ${m.fechaNacimiento ?: "No registrada"}", style = MaterialTheme.typography.bodyLarge)
-                    Text("Peso: ${m.pesoKg?.let { "$it kg" } ?: "No registrado"}", style = MaterialTheme.typography.bodyLarge)
-
-                    Button(onClick = { onHistorialCitas(id) }, modifier = Modifier.fillMaxWidth()) {
-                        Text("Historial de citas")
-                    }
-                    OutlinedButton(onClick = { onCarne(id) }, modifier = Modifier.fillMaxWidth()) {
-                        Text("Carné e historial médico")
-                    }
-                    if (esDueno) {
-                        Button(
-                            onClick = { confirmar = true },
-                            enabled = !ui.ocupado,
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                            modifier = Modifier.fillMaxWidth(),
-                        ) { Text("Eliminar mascota") }
-                    }
-                    TextButton(onClick = onRetry) { Text("Actualizar") }
                 }
             }
         }
@@ -250,6 +294,59 @@ fun MascotaDetailContent(
             },
             onDismiss = { confirmar = false },
         )
+    }
+}
+
+private fun edadTexto(fechaNacimiento: String): String? {
+    val dias = diasHasta(fechaNacimiento)?.let { -it } ?: return null
+    if (dias < 0) return null
+    val anios = dias / 365
+    val meses = (dias % 365) / 30
+    return when {
+        anios >= 1 -> if (anios == 1) "1 año" else "$anios años"
+        meses >= 1 -> if (meses == 1) "1 mes" else "$meses meses"
+        else -> "Cachorro"
+    }
+}
+
+@Composable
+private fun DatoChip(texto: String) {
+    Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surface) {
+        Text(
+            texto,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+        )
+    }
+}
+
+@Composable
+private fun DosisFila(dosis: ProximaDosis) {
+    val estado = estadoDosis(dosis.fecha)
+    val (fondo, texto) = when (estado.nivel) {
+        NivelDosis.VENCIDA -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.error
+        NivelDosis.PROXIMA -> MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.primary
+    }
+    Card(Modifier.fillMaxWidth()) {
+        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(dosis.vacuna.nombre, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Próxima: ${fechaCorta(dosis.fecha)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Surface(shape = RoundedCornerShape(50), color = fondo) {
+                Text(
+                    estado.texto,
+                    color = texto,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                )
+            }
+        }
     }
 }
 

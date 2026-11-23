@@ -39,10 +39,12 @@ class AuthRepository(private val api: ApiService, private val tokens: TokenStore
         val result = apiCall { api.login(LoginRequest(email, password)) }
         if (result is ApiResult.Success) {
             tokens.saveTokens(result.data.accessToken, result.data.refreshToken)
-            tokens.saveUser(result.data.usuario)
+            tokens.saveUser(result.data.usuario, publicar = false)
         }
         return result.map { it.usuario }
     }
+
+    fun publicarSesion() = tokens.publicarSesion()
 
     suspend fun logout() {
         val refresh = tokens.refreshToken

@@ -22,6 +22,10 @@ import com.uth.proyectofinal.data.repository.AuthRepository
 import com.uth.proyectofinal.ui.common.ActionButton
 import com.uth.proyectofinal.ui.common.AppScaffold
 import com.uth.proyectofinal.ui.common.AppTextField
+import com.uth.proyectofinal.ui.common.CampoTelefono
+import com.uth.proyectofinal.ui.common.PAISES
+import com.uth.proyectofinal.ui.common.Pais
+import com.uth.proyectofinal.ui.common.componer
 import com.uth.proyectofinal.ui.common.ErrorText
 import com.uth.proyectofinal.ui.common.appFactory
 import com.uth.proyectofinal.ui.common.opcional
@@ -36,6 +40,7 @@ data class RegisterUi(
     val nombre: String = "",
     val email: String = "",
     val telefono: String = "",
+    val pais: Pais = PAISES.first(),
     val password: String = "",
     val loading: Boolean = false,
     val error: String? = null,
@@ -49,7 +54,11 @@ class RegisterViewModel(private val auth: AuthRepository) : ViewModel() {
 
     fun onNombre(value: String) = _ui.update { it.copy(nombre = value, error = null) }
     fun onEmail(value: String) = _ui.update { it.copy(email = value, error = null) }
-    fun onTelefono(value: String) = _ui.update { it.copy(telefono = value, error = null) }
+    fun onTelefono(value: String) = _ui.update {
+        it.copy(telefono = value.filter { c -> c.isDigit() }.take(it.pais.digitos), error = null)
+    }
+
+    fun onPais(pais: Pais) = _ui.update { it.copy(pais = pais, telefono = it.telefono.take(pais.digitos), error = null) }
     fun onPassword(value: String) = _ui.update { it.copy(password = value, error = null) }
 
     fun registrar() {
@@ -57,6 +66,8 @@ class RegisterViewModel(private val auth: AuthRepository) : ViewModel() {
         val validation = when {
             s.nombre.isBlank() -> "Ingresa tu nombre."
             !s.email.contains("@") -> "Ingresa un correo válido."
+            s.telefono.isEmpty() -> "Ingresa tu teléfono para que la veterinaria pueda contactarte."
+            s.telefono.length != s.pais.digitos -> "El número de ${s.pais.nombre} debe tener ${s.pais.digitos} dígitos."
             s.password.length < 8 -> "La contraseña debe tener al menos 8 caracteres."
             else -> null
         }
@@ -67,7 +78,7 @@ class RegisterViewModel(private val auth: AuthRepository) : ViewModel() {
         val email = s.email.trim()
         viewModelScope.launch {
             _ui.update { it.copy(loading = true, error = null) }
-            when (val result = auth.register(s.nombre.trim(), email, s.password, s.telefono.opcional())) {
+            when (val result = auth.register(s.nombre.trim(), email, s.password, s.pais.componer(s.telefono))) {
                 is ApiResult.Success -> _ui.update { it.copy(loading = false, registrado = email) }
                 is ApiResult.Error -> _ui.update { it.copy(loading = false, error = result.message) }
             }
@@ -90,6 +101,7 @@ fun RegisterScreen(onBack: () -> Unit, onRegistered: (String) -> Unit) {
         onNombre = vm::onNombre,
         onEmail = vm::onEmail,
         onTelefono = vm::onTelefono,
+        onPais = vm::onPais,
         onPassword = vm::onPassword,
         onRegistrar = vm::registrar,
     )
@@ -102,6 +114,7 @@ fun RegisterContent(
     onNombre: (String) -> Unit = {},
     onEmail: (String) -> Unit = {},
     onTelefono: (String) -> Unit = {},
+    onPais: (Pais) -> Unit = {},
     onPassword: (String) -> Unit = {},
     onRegistrar: () -> Unit = {},
 ) {
@@ -116,7 +129,7 @@ fun RegisterContent(
         ) {
             AppTextField(ui.nombre, onNombre, "Nombre completo")
             AppTextField(ui.email, onEmail, "Correo electrónico", keyboard = KeyboardType.Email)
-            AppTextField(ui.telefono, onTelefono, "Teléfono (opcional)", keyboard = KeyboardType.Phone)
+            CampoTelefono(ui.pais, ui.telefono, onPais, onTelefono, "Teléfono o WhatsApp")
             AppTextField(ui.password, onPassword, "Contraseña (mínimo 8 caracteres)", password = true)
             ErrorText(ui.error)
             ActionButton("Registrarme", ui.loading, onRegistrar)
@@ -132,7 +145,7 @@ private fun RegisterScreenPreview() {
             ui = RegisterUi(
                 nombre = "Juan Pérez",
                 email = "juan@ejemplo.com",
-                telefono = "9999-8888",
+                telefono = "99998888",
             ),
         )
     }

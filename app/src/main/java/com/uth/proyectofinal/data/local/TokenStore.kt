@@ -52,13 +52,17 @@ class TokenStore(context: Context) {
         }
     }
 
-    fun saveUser(usuario: Usuario) {
+    fun saveUser(usuario: Usuario, publicar: Boolean = true) {
         prefs.edit {
             putInt(KEY_USER_ID, usuario.id)
             putString(KEY_NOMBRE, usuario.nombre)
             putString(KEY_EMAIL, usuario.email)
             putString(KEY_ROL, usuario.rol)
         }
+        if (publicar) _sesion.value = leerUsuario()
+    }
+
+    fun publicarSesion() {
         _sesion.value = leerUsuario()
     }
 

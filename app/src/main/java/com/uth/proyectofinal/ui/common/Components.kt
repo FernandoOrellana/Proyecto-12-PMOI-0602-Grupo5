@@ -70,6 +70,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.res.painterResource
+import com.uth.proyectofinal.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -276,6 +279,7 @@ fun AppTextField(
     keyboard: KeyboardType = KeyboardType.Text,
     singleLine: Boolean = true,
 ) {
+    var visible by rememberSaveable { mutableStateOf(false) }
     Column(modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = value,
@@ -285,7 +289,19 @@ fun AppTextField(
             isError = error != null,
             singleLine = singleLine,
             shape = MaterialTheme.shapes.small,
-            visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
+            trailingIcon = if (password) {
+                {
+                    IconButton(onClick = { visible = !visible }) {
+                        Icon(
+                            painterResource(if (visible) R.drawable.ic_ojo_tachado else R.drawable.ic_ojo),
+                            contentDescription = if (visible) "Ocultar contraseña" else "Mostrar contraseña",
+                        )
+                    }
+                }
+            } else {
+                null
+            },
+            visualTransformation = if (password && !visible) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = KeyboardOptions(keyboardType = if (password) KeyboardType.Password else keyboard),
         )
         if (error != null) FieldError(error)
@@ -469,7 +485,7 @@ fun <T> PagedColumn(
                         Modifier.fillMaxWidth().padding(top = 4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        if (state.loading && !state.refreshing) {
+                        if (state.loading && !state.recargando) {
                             CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
                         }
                         if (state.error != null) {
