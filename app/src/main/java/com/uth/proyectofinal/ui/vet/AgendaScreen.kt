@@ -62,7 +62,7 @@ import com.uth.proyectofinal.ui.common.textoCuando
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+import androidx.compose.ui.graphics.luminance
 
 class AgendaViewModel(private val citas: CitaRepository) : PagedViewModel<Cita>() {
 
@@ -159,6 +159,7 @@ fun AgendaContent(
                                     Text(
                                         "${cita.mascota.nombre} · ${cita.servicio.nombre}",
                                         style = MaterialTheme.typography.titleSmall,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.weight(1f),
@@ -215,11 +216,14 @@ private fun LineaAhora(hora: String) {
 }
 
 @Composable
-private fun fondoCita(estado: String): Color = when (estado) {
-    CitaEstado.ATENDIDA -> Color(0xFFE3F5EC)
-    CitaEstado.EN_CONSULTA -> Color(0xFFE6F0FB)
-    CitaEstado.CANCELADA -> MaterialTheme.colorScheme.surfaceVariant
-    else -> MaterialTheme.colorScheme.surface
+private fun fondoCita(estado: String): Color {
+    val oscuro = MaterialTheme.colorScheme.surface.luminance() < 0.5f
+    return when (estado) {
+        CitaEstado.ATENDIDA -> if (oscuro) Color(0xFF1C3A2E) else Color(0xFFE3F5EC)
+        CitaEstado.EN_CONSULTA -> if (oscuro) Color(0xFF1B2F45) else Color(0xFFE6F0FB)
+        CitaEstado.CANCELADA -> MaterialTheme.colorScheme.surfaceVariant
+        else -> MaterialTheme.colorScheme.surface
+    }
 }
 
 @Preview(showBackground = true)
