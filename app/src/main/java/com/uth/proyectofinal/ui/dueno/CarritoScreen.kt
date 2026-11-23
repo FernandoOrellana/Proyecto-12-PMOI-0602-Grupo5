@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -74,13 +75,14 @@ class CarritoViewModel(
     fun quitar(productoId: Int) = cart.setCantidad(productoId, 0)
 
     fun confirmar() {
+        if (_ui.value.enviando) return
         val request = cart.items.value.map { ItemPedidoRequest(it.productoId, it.cantidad) }
         if (request.isEmpty()) {
             _ui.update { it.copy(error = "Tu carrito está vacío.") }
             return
         }
+        _ui.update { it.copy(enviando = true, error = null) }
         viewModelScope.launch {
-            _ui.update { it.copy(enviando = true, error = null) }
             when (val result = tienda.crearPedido(request)) {
                 is ApiResult.Success -> {
                     cart.clear()
@@ -93,7 +95,7 @@ class CarritoViewModel(
 }
 
 @Composable
-fun CarritoScreen(onBack: () -> Unit, onPedidoCreado: () -> Unit) {
+fun CarritoScreen(onBack: () -> Unit, onPedidos: () -> Unit, onPedidoCreado: () -> Unit) {
     val vm: CarritoViewModel = viewModel(factory = appFactory { CarritoViewModel(it.cart, it.tienda) })
     val items by vm.items.collectAsStateWithLifecycle()
     val total by vm.total.collectAsStateWithLifecycle()
@@ -104,6 +106,7 @@ fun CarritoScreen(onBack: () -> Unit, onPedidoCreado: () -> Unit) {
         total = total,
         ui = ui,
         onBack = onBack,
+        onPedidos = onPedidos,
         onPedidoCreado = onPedidoCreado,
         onCambiarCantidad = vm::cambiarCantidad,
         onQuitar = vm::quitar,
@@ -117,23 +120,24 @@ fun CarritoContent(
     total: Double,
     ui: CarritoUi,
     onBack: () -> Unit = {},
+    onPedidos: () -> Unit = {},
     onPedidoCreado: () -> Unit = {},
     onCambiarCantidad: (Int, Int) -> Unit = { _, _ -> },
     onQuitar: (Int) -> Unit = {},
     onConfirmar: () -> Unit = {},
 ) {
-    AppScaffold(title = "Carrito", onBack = onBack) { padding ->
-        if (items.isEmpty()) {
-            EmptyBox("Tu carrito está vacío.", Modifier.padding(padding))
-        } else {
-            Column(Modifier.padding(padding).fillMaxSize()) {
+    AppScaffold(title = "Mi carrito", onBack = onBack) { padding ->
+        Column(Modifier.padding(padding).fillMaxSize()) {
+            if (items.isEmpty()) {
+                EmptyBox("Tu carrito está vacío.", Modifier.weight(1f))
+            } else {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(items, key = { it.productoId }) { item ->
-                        CartRow(item, onCambiarCantidad, onQuitar)
+                        CartRow(item, onCambiarCantidad, onQuitar, !ui.enviando)
                     }
                 }
                 Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -143,6 +147,11 @@ fun CarritoContent(
                     ActionButton("Confirmar pedido", ui.enviando, onConfirmar)
                 }
             }
+            OutlinedButton(
+                onClick = onPedidos,
+                enabled = !ui.enviando,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            ) { Text("Mis pedidos") }
         }
     }
 
@@ -162,6 +171,7 @@ private fun CartRow(
     item: CartItem,
     onCambiarCantidad: (Int, Int) -> Unit,
     onQuitar: (Int) -> Unit,
+    enabled: Boolean,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -172,13 +182,13 @@ private fun CartRow(
                 Text(item.nombre, style = MaterialTheme.typography.titleSmall)
                 Text("${item.precio.lps()} c/u · Subtotal ${(item.precio * item.cantidad).lps()}", style = MaterialTheme.typography.bodySmall)
             }
-            TextButton(onClick = { onCambiarCantidad(item.productoId, item.cantidad - 1) }) { Text("−") }
+            TextButton(onClick = { onCambiarCantidad(item.productoId, item.cantidad - 1) }, enabled = enabled) { Text("−") }
             Text("${item.cantidad}")
             TextButton(
                 onClick = { onCambiarCantidad(item.productoId, item.cantidad + 1) },
-                enabled = item.cantidad < item.stock,
+                enabled = enabled && item.cantidad < item.stock,
             ) { Text("+") }
-            IconButton(onClick = { onQuitar(item.productoId) }) {
+            IconButton(onClick = { onQuitar(item.productoId) }, enabled = enabled) {
                 Icon(Icons.Default.Delete, contentDescription = "Eliminar")
             }
         }
