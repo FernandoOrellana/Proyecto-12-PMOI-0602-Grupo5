@@ -29,6 +29,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraph
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,6 +47,10 @@ import com.uth.proyectofinal.ui.admin.AdminCitasScreen
 import com.uth.proyectofinal.ui.admin.AdminCitaCobroScreen
 import com.uth.proyectofinal.data.remote.dto.Rol
 import com.uth.proyectofinal.ui.admin.AdminServiciosScreen
+import com.uth.proyectofinal.ui.admin.ClinicaScreen
+import com.uth.proyectofinal.ui.admin.MasScreen
+import com.uth.proyectofinal.ui.admin.PanelScreen
+import com.uth.proyectofinal.ui.dueno.InicioScreen
 import com.uth.proyectofinal.ui.admin.AdminVeterinariosScreen
 import com.uth.proyectofinal.ui.admin.HorariosScreen
 import com.uth.proyectofinal.ui.admin.ProductoFormScreen
@@ -70,6 +76,7 @@ import com.uth.proyectofinal.ui.mascota.HistorialCitasMascotaScreen
 import com.uth.proyectofinal.ui.perfil.NotificacionesScreen
 import com.uth.proyectofinal.ui.perfil.PerfilScreen
 import com.uth.proyectofinal.ui.vet.AgendaScreen
+import com.uth.proyectofinal.ui.vet.VetInicioScreen
 import com.uth.proyectofinal.ui.vet.CitaDetailScreen
 import com.uth.proyectofinal.ui.vet.ConsultaFormScreen
 import com.uth.proyectofinal.ui.vet.VacunaFormScreen
@@ -103,7 +110,12 @@ private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String)
     val nav = rememberNavController()
     val route = nav.currentBackStackEntryAsState().value?.destination?.route
     val tabs = tabsFor(rol)
-    val showBar = tabs.any { it.route == route }
+    val extras = rutasConBarra(rol)
+    val showBar = tabs.any { it.route == route } || route in extras
+    val pila by nav.currentBackStack.collectAsStateWithLifecycle()
+    val tabActual = pila.lastOrNull { entrada -> tabs.any { it.route == entrada.destination.route } }
+        ?.destination?.route
+        ?: extras[route]
 
     LaunchedEffect(Unit) {
         SessionEvents.logout.collect {
@@ -125,10 +137,24 @@ private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String)
 
     fun goLogin() = nav.navigate(Routes.LOGIN) { popUpTo(nav.graph.id) { inclusive = true } }
 
+    fun irATab(destino: String) {
+        if (destino == tabActual) {
+            if (route != destino) nav.popBackStack(destino, inclusive = false)
+            return
+        }
+        val raiz = nav.currentBackStack.value.firstOrNull { it.destination !is NavGraph }?.destination?.id
+            ?: nav.graph.findStartDestination().id
+        nav.navigate(destino) {
+            popUpTo(raiz) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     Scaffold(
         bottomBar = {
             if (showBar) {
-                val barModifier = if (rol == Rol.ADMINISTRADOR) {
+                val barModifier = if (tabs.size > 5) {
                     Modifier.horizontalScroll(rememberScrollState()).widthIn(min = (tabs.size * 80).dp)
                 } else Modifier
                 NavigationBar(
@@ -138,14 +164,8 @@ private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String)
                 ) {
                     tabs.forEach { tab ->
                         NavigationBarItem(
-                            selected = route == tab.route,
-                            onClick = {
-                                nav.navigate(tab.route) {
-                                    popUpTo(nav.graph.id) { saveState = true }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
+                            selected = tab.route == tabActual,
+                            onClick = { irATab(tab.route) },
                             icon = { Icon(tab.icon, contentDescription = tab.label) },
                             label = { Text(tab.label, maxLines = 1) },
                             alwaysShowLabel = tabs.size <= 5,
@@ -216,6 +236,51 @@ private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String)
                 )
             }
 
+            composable(Routes.INICIO) {
+                InicioScreen(
+                    onAgendar = { nav.navigate(Routes.CITA_NUEVA) },
+                    onCitas = { irATab(Routes.CITAS) },
+                    onTienda = { irATab(Routes.TIENDA) },
+                    onPedidos = { nav.navigate(Routes.PEDIDOS) },
+                    onMascotas = { irATab(Routes.MASCOTAS) },
+                    onMascota = { nav.navigate(Routes.mascota(it)) },
+                    onNuevaMascota = { nav.navigate(Routes.mascotaForm()) },
+                    onNotificaciones = { nav.navigate(Routes.NOTIFICACIONES) },
+                )
+            }
+            composable(Routes.VET_INICIO) {
+                VetInicioScreen(
+                    onAgenda = { irATab(Routes.AGENDA) },
+                    onPacientes = { irATab(Routes.MASCOTAS) },
+                    onNotificaciones = { nav.navigate(Routes.NOTIFICACIONES) },
+                    onOpenCita = { nav.navigate(Routes.cita(it)) },
+                )
+            }
+            composable(Routes.ADMIN_PANEL) {
+                PanelScreen(
+                    onNuevoProducto = { nav.navigate(Routes.productoForm()) },
+                    onNuevoVeterinario = { nav.navigate(Routes.veterinarioForm()) },
+                    onServicios = { nav.navigate(Routes.ADMIN_SERVICIOS) },
+                    onCitas = { irATab(Routes.ADMIN_CITAS) },
+                    onPedidos = { irATab(Routes.ADMIN_PEDIDOS) },
+                    onProductos = { irATab(Routes.ADMIN_PRODUCTOS) },
+                    onReportes = { nav.navigate(Routes.REPORTES) },
+                )
+            }
+            composable(Routes.ADMIN_MAS) {
+                MasScreen(
+                    onServicios = { nav.navigate(Routes.ADMIN_SERVICIOS) },
+                    onVeterinarios = { nav.navigate(Routes.ADMIN_VETERINARIOS) },
+                    onMascotas = { nav.navigate(Routes.MASCOTAS) },
+                    onProductos = { irATab(Routes.ADMIN_PRODUCTOS) },
+                    onReportes = { nav.navigate(Routes.REPORTES) },
+                    onPerfil = { nav.navigate(Routes.PERFIL) },
+                    onClinica = { nav.navigate(Routes.ADMIN_CLINICA) },
+                )
+            }
+            composable(Routes.ADMIN_CLINICA) {
+                ClinicaScreen(onBack = { nav.popBackStack() })
+            }
             composable(Routes.MASCOTAS) {
                 MascotasScreen(
                     rol = rol,
@@ -232,6 +297,7 @@ private fun SesionNavHost(container: AppContainer, rol: String?, inicio: String)
                     onCarne = { nav.navigate(Routes.carne(it)) },
                     onHistorialCitas = { nav.navigate(Routes.historialCitas(it)) },
                     onDeleted = { nav.popBackStack() },
+                    onAgendar = { nav.navigate(Routes.CITA_NUEVA) },
                 )
             }
             composable(Routes.MASCOTA_FORM, arguments = intArgs("id")) {

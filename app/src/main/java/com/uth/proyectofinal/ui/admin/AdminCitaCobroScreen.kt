@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
+import com.uth.proyectofinal.ui.common.ContactoCliente
+import com.uth.proyectofinal.ui.common.datosClinica
 
 data class AdminCitaCobroUi(
     val cita: Cita? = null,
@@ -97,6 +99,11 @@ fun AdminCitaCobroScreen(id: Int, onBack: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 EstadoBadge(cita.estado)
                 Text("Cliente: ${cita.dueno?.nombre ?: "No disponible"}")
+                ContactoCliente(
+                    nombre = cita.dueno?.nombre ?: "El cliente",
+                    telefono = cita.dueno?.telefono,
+                    mensaje = "Hola ${cita.dueno?.nombre.orEmpty()}, le escribimos de ${datosClinica().nombre} sobre la cita de ${cita.mascota.nombre} del ${cita.fecha} a las ${cita.hora}.",
+                )
                 Text("Mascota: ${cita.mascota.nombre}")
                 Text("Servicio: ${cita.servicio.nombre}")
                 Text("Fecha: ${cita.fecha} ${cita.hora}")

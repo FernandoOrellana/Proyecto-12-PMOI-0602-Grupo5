@@ -46,6 +46,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import com.uth.proyectofinal.R
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
+import kotlinx.coroutines.delay
 
 data class LoginUi(
     val email: String = "",
@@ -63,6 +67,8 @@ class LoginViewModel(
 
     private val _ui = MutableStateFlow(LoginUi())
     val ui: StateFlow<LoginUi> = _ui.asStateFlow()
+
+    fun entrar() = auth.publicarSesion()
 
     fun onEmail(value: String) = _ui.update { it.copy(email = value, error = null, sinVerificar = false) }
 
@@ -104,7 +110,10 @@ fun LoginScreen(
     val ui by vm.ui.collectAsStateWithLifecycle()
 
     LaunchedEffect(ui.rol) {
-        ui.rol?.let(onLoggedIn)
+        val rol = ui.rol ?: return@LaunchedEffect
+        delay(1600)
+        vm.entrar()
+        onLoggedIn(rol)
     }
 
     LoginContent(
@@ -128,58 +137,67 @@ fun LoginContent(
     onForgot: () -> Unit = {},
     onVerify: (String) -> Unit = {},
 ) {
+    val entrando = ui.rol != null
+    val alphaContenido by animateFloatAsState(
+        targetValue = if (entrando) 0f else 1f,
+        animationSpec = tween(250),
+        label = "contenido",
+    )
     AppScaffold(title = "") { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(24.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Spacer(Modifier.height(16.dp))
-            Box(
-                Modifier
-                    .size(104.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
+        Box(Modifier.padding(padding).fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .graphicsLayer { alpha = alphaContenido }
+                    .padding(24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState(), enabled = !entrando),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Image(
-                    painter = painterResource(R.drawable.logo),
-                    contentDescription = "PetCare HN",
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.TopCenter,
-                    modifier = Modifier.fillMaxSize(),
+                Spacer(Modifier.height(16.dp))
+                Box(
+                    Modifier
+                        .size(104.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.logo),
+                        contentDescription = "PetCare HN",
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.TopCenter,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+                Text("PetCare HN", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    "Veterinaria Huellitas",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                Spacer(Modifier.height(12.dp))
+                AppTextField(
+                    value = ui.email,
+                    onValueChange = onEmailChange,
+                    label = "Correo electrónico",
+                    keyboard = KeyboardType.Email,
+                )
+                AppTextField(
+                    value = ui.password,
+                    onValueChange = onPasswordChange,
+                    label = "Contraseña",
+                    password = true,
+                )
+                ErrorText(ui.error)
+                if (ui.sinVerificar) {
+                    TextButton(onClick = { onVerify(ui.email.trim()) }) { Text("Verificar mi correo") }
+                }
+                ActionButton("Iniciar sesión", ui.loading || entrando, onLogin)
+                TextButton(onClick = onRegister) { Text("Crear cuenta") }
+                TextButton(onClick = onForgot) { Text("¿Olvidaste tu contraseña?") }
             }
-            Text("PetCare HN", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
-            Text(
-                "Veterinaria Huellitas",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(12.dp))
-            AppTextField(
-                value = ui.email,
-                onValueChange = onEmailChange,
-                label = "Correo electrónico",
-                keyboard = KeyboardType.Email,
-            )
-            AppTextField(
-                value = ui.password,
-                onValueChange = onPasswordChange,
-                label = "Contraseña",
-                password = true,
-            )
-            ErrorText(ui.error)
-            if (ui.sinVerificar) {
-                TextButton(onClick = { onVerify(ui.email.trim()) }) { Text("Verificar mi correo") }
-            }
-            ActionButton("Iniciar sesión", ui.loading, onLogin)
-            TextButton(onClick = onRegister) { Text("Crear cuenta") }
-            TextButton(onClick = onForgot) { Text("¿Olvidaste tu contraseña?") }
+            if (entrando) EspiralEntrada()
         }
     }
 }

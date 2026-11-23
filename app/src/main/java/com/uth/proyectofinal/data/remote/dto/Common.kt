@@ -1,6 +1,6 @@
 package com.uth.proyectofinal.data.remote.dto
 
-data class Ref(val id: Int = 0, val nombre: String = "")
+data class Ref(val id: Int = 0, val nombre: String = "", val telefono: String? = null)
 
 data class MessageDto(val message: String? = null)
 

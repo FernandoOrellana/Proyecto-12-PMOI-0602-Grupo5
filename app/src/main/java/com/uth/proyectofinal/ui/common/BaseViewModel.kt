@@ -30,6 +30,7 @@ data class PagedState<T>(
     val page: Int = 0,
     val hasMore: Boolean = true,
     val refreshing: Boolean = false,
+    val recargando: Boolean = false,
 )
 
 abstract class PagedViewModel<T> : MessageViewModel() {
@@ -51,7 +52,7 @@ abstract class PagedViewModel<T> : MessageViewModel() {
             return
         }
         job = viewModelScope.launch {
-            _state.update { it.copy(loading = true, refreshing = mostrarIndicador, error = null) }
+            _state.update { it.copy(loading = true, refreshing = mostrarIndicador, recargando = true, error = null) }
             when (val result = fetch(1)) {
                 is ApiResult.Success -> {
                     val meta = result.data.meta
@@ -61,7 +62,7 @@ abstract class PagedViewModel<T> : MessageViewModel() {
                         hasMore = meta != null && meta.page < meta.totalPages,
                     )
                 }
-                is ApiResult.Error -> _state.update { it.copy(loading = false, refreshing = false, error = result.message) }
+                is ApiResult.Error -> _state.update { it.copy(loading = false, refreshing = false, recargando = false, error = result.message) }
             }
         }
     }

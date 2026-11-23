@@ -3,6 +3,7 @@ package com.uth.proyectofinal
 import android.content.Context
 import android.os.Build
 import com.uth.proyectofinal.data.local.CartStore
+import com.uth.proyectofinal.data.local.ClinicaStore
 import com.uth.proyectofinal.data.local.SessionEvents
 import com.uth.proyectofinal.data.local.TokenStore
 import com.uth.proyectofinal.data.remote.ApiClient
@@ -18,6 +19,7 @@ import com.uth.proyectofinal.push.PushRegistrar
 class AppContainer(context: Context) {
     val tokens = TokenStore(context)
     val cart = CartStore()
+    val clinica = ClinicaStore(context)
 
     private val api = ApiClient(BuildConfig.API_BASE_URL, tokens) { SessionEvents.emitLogout() }.service
 

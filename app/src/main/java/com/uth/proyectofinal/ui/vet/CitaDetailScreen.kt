@@ -37,6 +37,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.uth.proyectofinal.ui.common.ContactoCliente
+import com.uth.proyectofinal.ui.common.datosClinica
 
 data class CitaDetailUi(
     val cita: Cita? = null,
@@ -114,13 +118,18 @@ fun CitaDetailContent(
             ui.cargando && cita == null -> LoadingBox(Modifier.padding(padding))
             cita == null -> ErrorBox(ui.error ?: "No se pudo cargar la cita.", onRetry, Modifier.padding(padding))
             else -> Column(
-                modifier = Modifier.padding(padding).padding(24.dp).fillMaxSize(),
+                modifier = Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text("${cita.fecha} · ${cita.hora}", style = MaterialTheme.typography.headlineSmall)
                 EstadoBadge(cita.estado)
                 Text("Mascota: ${cita.mascota.nombre}", style = MaterialTheme.typography.bodyLarge)
                 Text("Dueño: ${cita.dueno?.nombre.orEmpty()}", style = MaterialTheme.typography.bodyLarge)
+                ContactoCliente(
+                    nombre = cita.dueno?.nombre.orEmpty(),
+                    telefono = cita.dueno?.telefono,
+                    mensaje = "Hola ${cita.dueno?.nombre.orEmpty()}, le escribimos de ${datosClinica().nombre} sobre la cita de ${cita.mascota.nombre} del ${cita.fecha} a las ${cita.hora}.",
+                )
                 Text("Servicio: ${cita.servicio.nombre} (${cita.servicio.precio.lps()})", style = MaterialTheme.typography.bodyLarge)
                 Text("Veterinario: ${cita.veterinario.nombre}", style = MaterialTheme.typography.bodyLarge)
 

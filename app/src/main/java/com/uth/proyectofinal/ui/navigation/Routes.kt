@@ -6,7 +6,9 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -21,6 +23,7 @@ object Routes {
     const val FORGOT = "forgot"
     const val RESET = "reset/{email}"
 
+    const val INICIO = "inicio"
     const val MASCOTAS = "mascotas"
     const val MASCOTA = "mascota/{id}"
     const val MASCOTA_FORM = "mascota_form/{id}"
@@ -35,6 +38,7 @@ object Routes {
     const val PERFIL = "perfil"
     const val NOTIFICACIONES = "notificaciones"
 
+    const val VET_INICIO = "vet_inicio"
     const val AGENDA = "agenda"
     const val CITA = "cita/{id}"
     const val CONSULTA = "consulta/{citaId}"
@@ -51,6 +55,9 @@ object Routes {
     const val VETERINARIO_FORM = "veterinario_form/{id}"
     const val HORARIOS = "horarios/{id}"
     const val REPORTES = "reportes"
+    const val ADMIN_PANEL = "admin_panel"
+    const val ADMIN_MAS = "admin_mas"
+    const val ADMIN_CLINICA = "admin_clinica"
 
     const val NUEVO = 0
 
@@ -71,13 +78,18 @@ object Routes {
     fun horarios(id: Int) = "horarios/$id"
 
     fun homeFor(rol: String?): String = when (rol) {
-        Rol.VETERINARIO -> AGENDA
-        Rol.ADMINISTRADOR -> ADMIN_PRODUCTOS
-        else -> MASCOTAS
+        Rol.VETERINARIO -> VET_INICIO
+        Rol.ADMINISTRADOR -> ADMIN_PANEL
+        else -> INICIO
     }
 }
 
 enum class MainTab(val route: String, val label: String, val icon: ImageVector) {
+    INICIO(Routes.INICIO, "Inicio", Icons.Default.Home),
+    PANEL(Routes.ADMIN_PANEL, "Panel", Icons.Default.Home),
+    MAS(Routes.ADMIN_MAS, "Más", Icons.Default.Menu),
+    VET_INICIO(Routes.VET_INICIO, "Inicio", Icons.Default.Home),
+    PACIENTES(Routes.MASCOTAS, "Pacientes", Icons.Default.Favorite),
     MASCOTAS(Routes.MASCOTAS, "Mascotas", Icons.Default.Favorite),
     CITAS(Routes.CITAS, "Citas", Icons.Default.DateRange),
     TIENDA(Routes.TIENDA, "Tienda", Icons.Default.ShoppingCart),
@@ -93,16 +105,26 @@ enum class MainTab(val route: String, val label: String, val icon: ImageVector) 
 }
 
 fun tabsFor(rol: String?): List<MainTab> = when (rol) {
-    Rol.VETERINARIO -> listOf(MainTab.AGENDA, MainTab.MASCOTAS, MainTab.PERFIL)
+    Rol.VETERINARIO -> listOf(MainTab.VET_INICIO, MainTab.AGENDA, MainTab.PACIENTES, MainTab.PERFIL)
     Rol.ADMINISTRADOR -> listOf(
-        MainTab.PRODUCTOS,
-        MainTab.ADMIN_PEDIDOS,
+        MainTab.PANEL,
         MainTab.ADMIN_CITAS,
-        MainTab.SERVICIOS,
-        MainTab.VETERINARIOS,
-        MainTab.MASCOTAS,
-        MainTab.REPORTES,
-        MainTab.PERFIL,
+        MainTab.ADMIN_PEDIDOS,
+        MainTab.PRODUCTOS,
+        MainTab.MAS,
     )
-    else -> listOf(MainTab.MASCOTAS, MainTab.CITAS, MainTab.TIENDA, MainTab.PEDIDOS, MainTab.PERFIL)
+    else -> listOf(MainTab.INICIO, MainTab.MASCOTAS, MainTab.CITAS, MainTab.TIENDA, MainTab.PERFIL)
+}
+
+fun rutasConBarra(rol: String?): Map<String, String> = when (rol) {
+    Rol.ADMINISTRADOR -> listOf(
+        Routes.ADMIN_SERVICIOS,
+        Routes.ADMIN_VETERINARIOS,
+        Routes.MASCOTAS,
+        Routes.REPORTES,
+        Routes.PERFIL,
+        Routes.ADMIN_CLINICA,
+    ).associateWith { Routes.ADMIN_MAS }
+    Rol.VETERINARIO -> emptyMap()
+    else -> mapOf(Routes.PEDIDOS to Routes.TIENDA)
 }

@@ -61,6 +61,24 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import com.uth.proyectofinal.data.repository.dataOrNull
+import com.uth.proyectofinal.ui.common.EmptyBox
+import com.uth.proyectofinal.ui.common.ErrorBox
+import com.uth.proyectofinal.ui.common.FiltroChips
+import com.uth.proyectofinal.ui.common.LoadingBox
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class TiendaViewModel(
     private val tienda: TiendaRepository,
@@ -73,8 +91,32 @@ class TiendaViewModel(
         .map { items -> items.sumOf { it.cantidad } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    override suspend fun fetch(page: Int): ApiResult<Page<List<Producto>>> =
-        tienda.productos(_categoria.value.opcional(), page)
+    val carrito: StateFlow<Map<Int, Int>> = cart.items
+        .map { items -> items.associate { it.productoId to it.cantidad } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+
+    private val _categorias = MutableStateFlow<List<String>>(emptyList())
+    val categorias: StateFlow<List<String>> = _categorias.asStateFlow()
+
+    val categoria: StateFlow<String> = _categoria.asStateFlow()
+
+    override suspend fun fetch(page: Int): ApiResult<Page<List<Producto>>> {
+        val resultado = tienda.productos(_categoria.value.opcional(), page)
+        resultado.dataOrNull()?.data?.let { lista ->
+            _categorias.update { actuales ->
+                (actuales + lista.map { it.categoria }).filter { it.isNotBlank() }.distinct().sorted()
+            }
+        }
+        return resultado
+    }
+
+    fun cambiarCantidad(producto: Producto, cantidad: Int) {
+        if (cantidad <= 0 || carrito.value.containsKey(producto.id)) {
+            cart.setCantidad(producto.id, cantidad)
+        } else {
+            agregar(producto)
+        }
+    }
 
     fun filtrar(categoria: String) {
         _categoria.value = categoria.trim()
@@ -95,6 +137,9 @@ fun TiendaScreen(onCarrito: () -> Unit) {
     val vm: TiendaViewModel = viewModel(factory = appFactory { TiendaViewModel(it.tienda, it.cart) })
     val state by vm.state.collectAsStateWithLifecycle()
     val cantidad by vm.cantidadCarrito.collectAsStateWithLifecycle()
+    val carrito by vm.carrito.collectAsStateWithLifecycle()
+    val categorias by vm.categorias.collectAsStateWithLifecycle()
+    val categoria by vm.categoria.collectAsStateWithLifecycle()
 
     OnResume { vm.refresh() }
 
@@ -106,6 +151,10 @@ fun TiendaScreen(onCarrito: () -> Unit) {
         onFiltrar = vm::filtrar,
         onAgregar = vm::agregar,
         onLoadMore = vm::loadMore,
+        carrito = carrito,
+        categorias = categorias,
+        categoria = categoria,
+        onCantidad = vm::cambiarCantidad,
     )
 }
 
@@ -118,8 +167,13 @@ fun TiendaContent(
     onFiltrar: (String) -> Unit = {},
     onAgregar: (Producto) -> Unit = {},
     onLoadMore: () -> Unit = {},
+    carrito: Map<Int, Int> = emptyMap(),
+    categorias: List<String> = emptyList(),
+    categoria: String = "",
+    onCantidad: (Producto, Int) -> Unit = { _, _ -> },
 ) {
-    var categoria by remember { mutableStateOf("") }
+    var busqueda by remember { mutableStateOf("") }
+    val visibles = if (busqueda.isBlank()) state.items else state.items.filter { it.nombre.contains(busqueda.trim(), ignoreCase = true) }
 
     AppScaffold(
         title = "Tienda",
@@ -133,71 +187,146 @@ fun TiendaContent(
         },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize()) {
-            Row(
+            OutlinedTextField(
+                value = busqueda,
+                onValueChange = { busqueda = it },
+                placeholder = { Text("Buscar productos") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                singleLine = true,
+                shape = RoundedCornerShape(50),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                ),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                OutlinedTextField(
-                    value = categoria,
-                    onValueChange = { categoria = it },
-                    label = { Text("Categoría") },
-                    singleLine = true,
-                    modifier = Modifier.weight(1f),
+            )
+            if (categorias.isNotEmpty()) {
+                FiltroChips(
+                    opciones = listOf(TODO_CATEGORIAS) + categorias,
+                    seleccion = categoria.ifBlank { TODO_CATEGORIAS },
+                    onSelect = { onFiltrar(if (it == TODO_CATEGORIAS) "" else it) },
+                    modifier = Modifier.padding(top = 10.dp),
                 )
-                TextButton(onClick = { onFiltrar(categoria) }) { Text("Filtrar") }
             }
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(state.items) { p ->
-                    ProductoCard(p) { onAgregar(p) }
+            when {
+                state.items.isEmpty() && state.loading -> LoadingBox()
+                state.items.isEmpty() && state.error != null -> ErrorBox(state.error, onLoadMore)
+                visibles.isEmpty() && !state.loading -> EmptyBox(
+                    if (busqueda.isBlank()) "No hay productos disponibles." else "No encontramos \"${busqueda.trim()}\".",
+                )
+                else -> LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(visibles, key = { it.id }) { p ->
+                        ProductoCard(
+                            p = p,
+                            cantidad = carrito[p.id] ?: 0,
+                            onAgregar = { onAgregar(p) },
+                            onCantidad = { onCantidad(p, it) },
+                        )
+                    }
+                    footer(state.loading && !state.recargando, state.error, state.hasMore && busqueda.isBlank(), onLoadMore)
                 }
-                footer(state.loading, state.error, state.hasMore, state.items.isEmpty(), onLoadMore)
             }
         }
     }
 }
+
+private const val TODO_CATEGORIAS = "Todo"
 
 private fun LazyGridScope.footer(
     loading: Boolean,
     error: String?,
     hasMore: Boolean,
-    vacio: Boolean,
     onLoadMore: () -> Unit,
 ) {
     item(span = { GridItemSpan(maxLineSpan) }) {
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            if (loading) CircularProgressIndicator(Modifier.size(24.dp))
+            if (loading) CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp)
             if (error != null) Text(error, color = MaterialTheme.colorScheme.error)
-            if (!loading && vacio && error == null) Text("No hay productos disponibles.")
-            if (!loading && hasMore) TextButton(onClick = onLoadMore) { Text("Cargar más") }
+            if (!loading && hasMore && error == null) {
+                LaunchedEffect(Unit) { onLoadMore() }
+            }
         }
     }
 }
 
 @Composable
-private fun ProductoCard(p: Producto, onAgregar: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun ProductoCard(p: Producto, cantidad: Int, onAgregar: () -> Unit, onCantidad: (Int) -> Unit) {
+    val agotado = p.stock <= 0
+    Card(modifier = Modifier.fillMaxWidth().graphicsLayer { alpha = if (agotado) 0.55f else 1f }) {
         Column {
-            AsyncImage(
-                model = p.imagenUrl,
-                contentDescription = p.nombre,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth().height(120.dp),
-            )
-            Column(
-                modifier = Modifier.padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+            Box(
+                Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .height(110.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
             ) {
-                Text(p.nombre, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text(p.precio.lps(), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-                Text("Stock: ${p.stock}", style = MaterialTheme.typography.bodySmall)
-                Button(onClick = onAgregar, enabled = p.stock > 0, modifier = Modifier.fillMaxWidth()) {
-                    Text(if (p.stock > 0) "Agregar" else "Agotado")
+                if (p.imagenUrl.isNullOrBlank()) {
+                    Icon(
+                        Icons.Default.ShoppingCart,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(36.dp),
+                    )
+                } else {
+                    AsyncImage(
+                        model = p.imagenUrl,
+                        contentDescription = p.nombre,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    p.nombre,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.height(40.dp),
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        p.precio.lps(),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.weight(1f),
+                    )
+                    when {
+                        agotado -> Text("Agotado", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.error)
+                        cantidad == 0 -> FilledIconButton(
+                            onClick = onAgregar,
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.size(32.dp),
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = "Agregar ${p.nombre}", modifier = Modifier.size(18.dp))
+                        }
+                        else -> Row(verticalAlignment = Alignment.CenterVertically) {
+                            OutlinedIconButton(onClick = { onCantidad(cantidad - 1) }, modifier = Modifier.size(28.dp)) {
+                                Text("−", style = MaterialTheme.typography.titleSmall)
+                            }
+                            Text("$cantidad", style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(horizontal = 8.dp))
+                            OutlinedIconButton(
+                                onClick = { onCantidad(cantidad + 1) },
+                                enabled = cantidad < p.stock,
+                                modifier = Modifier.size(28.dp),
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = "Sumar", modifier = Modifier.size(16.dp))
+                            }
+                        }
+                    }
                 }
             }
         }
